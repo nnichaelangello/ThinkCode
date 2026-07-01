@@ -1,0 +1,1179 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Dosen - Algoritma dan Pemrograman</title>
+  <meta name="description" content="Dashboard dosen ThinkCode untuk mata kuliah Algoritma dan Pemrograman.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: #0a0a0f;
+      color: #e2e8f0;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #111;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2d2d3d;
+      border-radius: 3px;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.1);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-item.active {
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .risk-low {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .risk-medium {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .risk-high {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .risk-moderate {
+      background: rgba(251, 146, 60, 0.12);
+      color: #fb923c;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      background: #12121f;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 32px;
+      width: 90%;
+      max-width: 580px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .input-field {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    select.input-field option {
+      background: #12121f;
+      color: white;
+    }
+
+    .student-row {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: all 0.2s;
+    }
+
+    .student-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .student-row:last-child {
+      border-bottom: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+  </style>
+</head>
+
+<body class="flex h-screen overflow-hidden">
+
+  <aside class="sidebar w-64 flex-shrink-0 flex flex-col p-4 overflow-y-auto">
+    <div class="flex items-center gap-3 mb-8 px-2 mt-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      </div>
+      <div>
+        <div class="font-bold text-white text-sm">ThinkCode</div>
+        <div class="text-xs text-purple-400 font-mono">dosen</div>
+      </div>
+    </div>
+
+    <nav class="space-y-1 flex-1">
+      <div class="nav-item active" id="nav-soal" onclick="showSection('soal')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        Kelola Soal
+      </div>
+      <div class="nav-item" id="nav-monitoring" onclick="showSection('monitoring')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        Monitoring
+      </div>
+      <div class="nav-item" id="nav-enrollment" onclick="showSection('enrollment')">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Pendaftaran Siswa
+        <span id="enroll-badge"
+          class="hidden ml-auto text-xs bg-amber-500 text-black font-bold px-1.5 py-0.5 rounded-full">!</span>
+      </div>
+    </nav>
+
+    <div class="glass rounded-xl p-3 mt-4">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center p-0.5 cursor-pointer"
+          onclick="logout()">
+          <img src="https://ui-avatars.com/api/?name=Teacher&background=random"
+            class="w-full h-full rounded-full border-2 border-[#0B0B14]">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div id="teacher-name" class="text-sm font-bold text-white truncate">Dosen</div>
+          <div class="text-xs text-gray-500 truncate cursor-pointer hover:text-indigo-400" onclick="logout()">Keluar
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="flex-1 overflow-y-auto bg-gradient-to-br from-[#0B0B14] to-[#12121f] relative">
+    <div class="max-w-6xl mx-auto p-8 relative z-10">
+
+      <section id="section-soal" class="animate-in">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h1 class="text-3xl font-black text-white mb-2">Manajemen Soal</h1>
+            <p class="text-gray-400 text-sm">Atur bab, buat soal, dan pantau pengguna.</p>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="openChapterModal()"
+              class="px-5 py-2.5 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-500 hover:to-indigo-400 transition-all shadow-lg shadow-purple-500/25 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Tambah Bab
+            </button>
+            <button onclick="openCreateProblemModal()"
+              class="px-5 py-2.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/25 flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Tambah Soal
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="stat-card">
+            <div class="text-2xl font-black gradient-text" id="st-total">-</div>
+            <div class="text-xs text-gray-500 mt-1">Total Soal</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-2xl font-black text-green-400" id="st-visible">-</div>
+            <div class="text-xs text-gray-500 mt-1">Soal Aktif</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-2xl font-black gradient-text" id="st-students">-</div>
+            <div class="text-xs text-gray-500 mt-1">Total Siswa</div>
+          </div>
+          <div class="stat-card">
+            <div class="text-2xl font-black text-amber-400" id="st-pending">-</div>
+            <div class="text-xs text-gray-500 mt-1">Pending Daftar</div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl overflow-hidden" id="problems-table">
+          <div class="p-5 text-gray-500 text-sm">Memuat soal...</div>
+        </div>
+      </section>
+
+      <section id="section-monitoring" class="hidden animate-in">
+        <div class="mb-6">
+          <div class="text-xs font-mono text-indigo-400 mb-1">Mata Kuliah</div>
+          <h1 class="text-2xl font-bold text-white">Monitoring Siswa</h1>
+          <p class="text-gray-500 text-sm mt-1">Pantau performa, ketergantungan AI, dan risiko plagiarisme</p>
+        </div>
+        <div id="monitoring-content">
+          <p class="text-gray-500 text-sm">Memuat data...</p>
+        </div>
+      </section>
+
+      <section id="section-enrollment" class="hidden animate-in">
+        <div class="mb-6">
+          <div class="text-xs font-mono text-indigo-400 mb-1">Mata Kuliah</div>
+          <h1 class="text-2xl font-bold text-white">Pendaftaran Siswa</h1>
+          <p class="text-gray-500 text-sm mt-1">Setujui atau tolak siswa yang mendaftar</p>
+        </div>
+        <div id="enrollment-content">
+          <p class="text-gray-500 text-sm">Memuat data...</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div id="create-problem-modal" class="modal-overlay" onclick="closeModal(event,'create-problem-modal')">
+    <div class="modal-box">
+      <h2 class="text-xl font-bold text-white mb-6" id="modal-title">Tambah Soal Baru</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pilih Bab</label>
+          <select id="cp-chapter" class="input-field w-full px-4 py-3 rounded-xl text-sm"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Judul Soal</label>
+          <input id="cp-title" type="text" placeholder="Pertemuan X: Topik Soal"
+            class="input-field w-full px-4 py-3 rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Deskripsi Soal</label>
+          <textarea id="cp-desc" rows="4" placeholder="Deskripsi lengkap soal dan instruksi..."
+            class="input-field w-full px-4 py-3 rounded-xl text-sm resize-none"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Format Input</label>
+            <textarea id="cp-input-fmt" rows="2" placeholder="Baris pertama: n..."
+              class="input-field w-full px-3 py-2 rounded-xl text-xs resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Format Output</label>
+            <textarea id="cp-output-fmt" rows="2" placeholder="Satu baris berisi..."
+              class="input-field w-full px-3 py-2 rounded-xl text-xs resize-none"></textarea>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Contoh Input</label>
+            <textarea id="cp-ex-in" rows="3"
+              class="input-field w-full px-3 py-2 rounded-xl text-xs font-mono resize-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Contoh Output</label>
+            <textarea id="cp-ex-out" rows="3"
+              class="input-field w-full px-3 py-2 rounded-xl text-xs font-mono resize-none"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Test Cases</label>
+            <button type="button" onclick="addTestCaseUI()"
+              class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">+ Tambah
+              Baris</button>
+          </div>
+          <div id="cp-testcases-container" class="space-y-3 max-h-60 overflow-y-auto pr-2"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Kesulitan</label>
+            <select id="cp-difficulty" class="input-field w-full px-3 py-2 rounded-xl text-sm">
+              <option value="easy">Mudah</option>
+              <option value="medium">Menengah</option>
+              <option value="hard">Sulit</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Batas Waktu
+              (ms)</label>
+            <input id="cp-timelimit" type="number" value="5000" class="input-field w-full px-3 py-2 rounded-xl text-sm">
+          </div>
+        </div>
+        <div class="flex gap-3 mt-4">
+          <button onclick="createProblem()"
+            class="btn-primary flex-1 py-3 rounded-xl font-semibold text-white text-sm">Simpan Soal</button>
+          <button onclick="document.getElementById('create-problem-modal').classList.remove('show')"
+            class="flex-1 py-3 rounded-xl glass text-gray-400 text-sm">Batal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-overlay">
+    <div class="modal-box w-full max-w-sm text-center">
+      <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h2 class="text-xl font-bold text-white mb-2" id="confirm-title">Konfirmasi</h2>
+      <p class="text-gray-400 text-sm mb-6" id="confirm-message">Apakah Anda yakin?</p>
+      <div class="flex gap-3">
+        <button id="confirm-cancel"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-gray-300 hover:text-white glass transition-colors">Batal</button>
+        <button id="confirm-ok"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-400 hover:to-pink-500 transition-all shadow-lg shadow-red-500/25">Yakin</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="detail-modal" class="modal-overlay" onclick="closeModal(event, 'detail-modal')">
+    <div class="modal-box w-full max-w-2xl">
+      <h2 class="text-xl font-black text-white mb-4" id="detail-title">Detail</h2>
+      <div id="detail-content"
+        class="text-gray-300 text-sm space-y-4 whitespace-pre-wrap font-mono bg-black/20 p-4 rounded-xl max-h-[50vh] overflow-y-auto">
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button onclick="document.getElementById('detail-modal').classList.remove('show')"
+          class="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chapter-modal" class="modal-overlay" onclick="closeModal(event, 'chapter-modal')">
+    <div class="modal-box w-full max-w-md">
+      <h2 class="text-xl font-black text-white mb-6" id="chapter-modal-title">Tambah Bab Baru</h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Nama Bab</label>
+          <input type="text" id="ch-title" class="input-field w-full px-4 py-3 rounded-xl text-sm"
+            placeholder="Contoh: Pertemuan 1 - Input Output">
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="saveChapter()"
+          class="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/25">Simpan
+          Bab</button>
+        <button onclick="document.getElementById('chapter-modal').classList.remove('show')"
+          class="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-gray-300 hover:text-white glass transition-colors">Batal</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    const API = '';
+    let courseId = null;
+    let allProblems = [];
+    let allChapters = [];
+    let activeMeeting = null;
+
+    function getToken() { return localStorage.getItem('tc_token'); }
+    function logout() { localStorage.clear(); window.location.href = '/login'; }
+    function escHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    async function apiFetch(url, opts = {}) {
+      try {
+        opts.headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}`, ...opts.headers };
+        const res = await fetch(API + url, opts);
+        if (res.status === 401) { logout(); return null; }
+        return await res.json();
+      } catch (err) {
+        console.error('apiFetch error on', url, err);
+        return null;
+      }
+    }
+
+    function closeModal(e, id) { if (e.target === e.currentTarget) document.getElementById(id).classList.remove('show'); }
+
+    function showMeeting(num) {
+      activeMeeting = num;
+      renderProblems();
+    }
+
+    function showSection(name) {
+      const sections = ['soal', 'monitoring', 'enrollment'];
+      sections.forEach(s => {
+        document.getElementById(`section-${s}`).classList.toggle('hidden', s !== name);
+        document.getElementById(`nav-${s}`).classList.toggle('active', s === name);
+      });
+      if (name === 'monitoring') loadMonitoring();
+      if (name === 'enrollment') loadEnrollments();
+      localStorage.setItem('teacher_active_tab', name);
+    }
+
+    function riskBadge(label) {
+      const cls = { LOW: 'risk-low', MEDIUM: 'risk-medium', HIGH: 'risk-high', MODERATE: 'risk-moderate', INDEPENDENT: 'risk-low' };
+      return `<span class="text-xs font-bold px-2 py-0.5 rounded-full ${cls[label] || 'risk-low'}">${label}</span>`;
+    }
+
+    async function initCourse() {
+      try {
+        const data = await apiFetch('/api/courses');
+        if (!data || !data.courses) return;
+        const course = data.courses.find(c => c.title === 'Algoritma dan Pemrograman') || data.courses[0];
+        if (!course) {
+          document.getElementById('problems-table').innerHTML = '<p class="p-5 text-red-400 text-sm">Kursus tidak ditemukan. Jalankan: node database/seed.js</p>';
+          return;
+        }
+        courseId = course.id;
+        await loadProblems();
+        await loadStats();
+      } catch (err) {
+        console.error('initCourse error', err);
+      }
+    }
+
+    async function loadStats() {
+      if (!courseId) return;
+      try {
+        const [pData, pendData, monData] = await Promise.all([
+          apiFetch(`/api/courses/${courseId}/problems?all=1`),
+          apiFetch(`/api/analytics/pending-enrollments/${courseId}`),
+          apiFetch(`/api/analytics/class/${courseId}`)
+        ]);
+
+        const total = pData?.problems?.length || 0;
+        const visible = pData?.problems?.filter(p => p.is_visible)?.length || 0;
+        const students = monData?.students?.length || 0;
+        const pending = pendData?.pending?.length || 0;
+
+        document.getElementById('st-total').textContent = total;
+        document.getElementById('st-visible').textContent = visible;
+        document.getElementById('st-students').textContent = students;
+        document.getElementById('st-pending').textContent = pending;
+
+        if (pending > 0) document.getElementById('enroll-badge').classList.remove('hidden');
+        else document.getElementById('enroll-badge').classList.add('hidden');
+      } catch (err) {
+        console.error('loadStats error', err);
+      }
+    }
+
+    async function loadProblems() {
+      const data = await apiFetch(`/api/courses/${courseId}/problems?all=1`);
+      if (!data) return;
+      allProblems = data.problems || [];
+      allChapters = data.chapters || [];
+      renderProblems();
+    }
+
+    function renderProblems() {
+      const container = document.getElementById('problems-table');
+
+      if (allChapters.length === 0) {
+        container.innerHTML = '<p class="p-5 text-gray-500 text-sm">Belum ada bab. Klik "Tambah Bab" untuk mulai membuat struktur materi.</p>';
+        return;
+      }
+
+      const diffBadge = d => {
+        const cls = { easy: 'text-green-400', medium: 'text-amber-400', hard: 'text-red-400' };
+        const lbl = { easy: 'Mudah', medium: 'Menengah', hard: 'Sulit' };
+        return `<span class="text-xs font-semibold ${cls[d] || 'text-gray-400'}">${lbl[d] || d}</span>`;
+      };
+
+      const grouped = {};
+      allChapters.forEach(ch => grouped[ch.id] = []);
+      allProblems.forEach(p => {
+        if (p.chapter_id && grouped[p.chapter_id]) {
+          grouped[p.chapter_id].push(p);
+        } else {
+          if (!grouped['unassigned']) grouped['unassigned'] = [];
+          grouped['unassigned'].push(p);
+        }
+      });
+
+      if (activeMeeting === null) {
+        let html = allChapters.map(ch => {
+          const problems = grouped[ch.id] || [];
+          return `
+          <div class="mb-4 glass-card rounded-2xl overflow-hidden chapter-card hover:bg-white/[0.02]" data-id="${ch.id}" draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
+            <div class="px-5 py-4 flex items-center justify-between">
+              <div class="flex items-center gap-3 cursor-move flex-1" onclick="showMeeting(${ch.id})">
+                <svg class="w-5 h-5 text-gray-500 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                <span class="text-sm font-bold text-white">${escHtml(ch.title)}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-indigo-400 font-mono bg-indigo-500/10 px-2 py-1 rounded-md cursor-pointer" onclick="showMeeting(${ch.id})">${problems.length} soal</span>
+                <button onclick="editChapterModal(event, ${ch.id})" class="text-gray-500 hover:text-blue-400 p-1 transition-colors ml-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </button>
+                <button onclick="deleteChapter(event, ${ch.id})" class="text-gray-500 hover:text-red-400 p-1 transition-colors ml-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+
+        if (grouped['unassigned'] && grouped['unassigned'].length > 0) {
+          html += `
+          <div class="mb-4 glass-card rounded-2xl overflow-hidden cursor-pointer hover:bg-white/[0.02]" onclick="showMeeting('unassigned')">
+            <div class="px-5 py-4 flex items-center justify-between">
+              <span class="text-sm font-bold text-gray-400">Soal Tanpa Bab</span>
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-indigo-400 font-mono bg-indigo-500/10 px-2 py-1 rounded-md">${grouped['unassigned'].length} soal</span>
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>`;
+        }
+        container.innerHTML = html;
+      } else {
+        let meetingTitle = 'Soal Tanpa Bab';
+        if (activeMeeting !== 'unassigned') {
+          const ch = allChapters.find(c => c.id === activeMeeting);
+          if (ch) meetingTitle = ch.title;
+        }
+
+        const problems = grouped[activeMeeting] || [];
+        container.innerHTML = `
+        <div class="mb-4 glass-card rounded-2xl overflow-hidden">
+          <div class="px-5 py-4 flex items-center gap-4 bg-white/[0.02] border-b border-white/5">
+            <button onclick="showMeeting(null)" class="text-gray-400 hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <span class="text-sm font-bold text-white flex-1">${escHtml(meetingTitle)}</span>
+            ${problems.length > 0 ? `
+            <div class="flex items-center gap-2">
+              <button onclick="setMeetingVisibility(1)" class="px-3 py-1.5 rounded-lg text-xs font-semibold glass text-green-400 transition-colors hover:border-green-500/30">Tampilkan Semua</button>
+              <button onclick="setMeetingVisibility(0)" class="px-3 py-1.5 rounded-lg text-xs font-semibold glass text-amber-400 transition-colors hover:border-amber-500/30">Sembunyikan Semua</button>
+            </div>
+            ` : ''}
+          </div>
+          <div>
+            ${problems.length === 0 ? '<p class="p-5 text-gray-500 text-sm">Tidak ada soal.</p>' : problems.map(p => `
+              <div class="problem-row flex items-center gap-4 px-5 py-4 border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-all cursor-move" 
+                   draggable="true" 
+                   ondragstart="handleProblemDragStart(event, ${p.id})"
+                   ondragover="handleProblemDragOver(event)"
+                   ondragleave="handleProblemDragLeave(event)"
+                   ondrop="handleProblemDrop(event, ${p.id})">
+                <div class="text-gray-500 cursor-grab active:cursor-grabbing hover:text-indigo-400 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-white text-sm">${escHtml(p.title)}</div>
+                  <div class="flex items-center gap-2 mt-1">
+                    ${diffBadge(p.difficulty)}
+                    <span class="text-gray-600 text-xs">-</span>
+                    <span class="text-xs ${p.is_visible ? 'text-green-400' : 'text-gray-600'}">${p.is_visible ? 'Aktif' : 'Disembunyikan'}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <button onclick="editProblem(${p.id})" class="px-3 py-1.5 rounded-lg text-xs font-semibold glass transition-colors hover:border-blue-500/30 text-blue-400">Edit</button>
+                  <button onclick="showProblemDetails(${p.id})" class="px-3 py-1.5 rounded-lg text-xs font-semibold glass transition-colors hover:border-indigo-500/30 text-indigo-400">Detail</button>
+                  <button onclick="toggleVisibility(${p.id})" class="px-3 py-1.5 rounded-lg text-xs font-semibold glass transition-colors hover:border-indigo-500/30 ${p.is_visible ? 'text-amber-400' : 'text-green-400'}">
+                    ${p.is_visible ? 'Sembunyikan' : 'Tampilkan'}
+                  </button>
+                  <button onclick="deleteProblem(${p.id})" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-red-400 glass hover:bg-red-500/10 transition-colors">Hapus</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+      }
+    }
+
+    async function toggleVisibility(problemId) {
+      await apiFetch(`/api/problems/${problemId}/visibility`, { method: 'PATCH' });
+      loadProblems();
+      loadStats();
+    }
+
+    async function setMeetingVisibility(status) {
+      if (activeMeeting === null) return;
+      const grouped = {};
+      allChapters.forEach(ch => grouped[ch.id] = []);
+      allProblems.forEach(p => {
+        if (p.chapter_id && grouped[p.chapter_id]) {
+          grouped[p.chapter_id].push(p);
+        } else {
+          if (!grouped['unassigned']) grouped['unassigned'] = [];
+          grouped['unassigned'].push(p);
+        }
+      });
+      const problems = grouped[activeMeeting] || [];
+      if (problems.length === 0) return;
+
+      const promises = problems.map(p =>
+        apiFetch(`/api/problems/${p.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ is_visible: status })
+        })
+      );
+
+      await Promise.all(promises);
+      loadProblems();
+      loadStats();
+    }
+
+    let draggedProblemId = null;
+
+    function handleProblemDragStart(e, id) {
+      draggedProblemId = id;
+      e.target.classList.add('opacity-40');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', id);
+    }
+
+    function handleProblemDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const targetRow = e.target.closest('.problem-row');
+      if (targetRow && !targetRow.classList.contains('border-indigo-500')) {
+        document.querySelectorAll('.problem-row').forEach(row => row.classList.remove('border-l-4', 'border-indigo-500', 'bg-white/[0.05]'));
+        targetRow.classList.add('border-l-4', 'border-indigo-500', 'bg-white/[0.05]');
+      }
+    }
+
+    function handleProblemDragLeave(e) {
+      const targetRow = e.target.closest('.problem-row');
+      if (targetRow) {
+        targetRow.classList.remove('border-l-4', 'border-indigo-500', 'bg-white/[0.05]');
+      }
+    }
+
+    async function handleProblemDrop(e, targetId) {
+      e.preventDefault();
+      document.querySelectorAll('.problem-row').forEach(row => row.classList.remove('opacity-40', 'border-l-4', 'border-indigo-500', 'bg-white/[0.05]'));
+      if (!draggedProblemId || draggedProblemId === targetId) return;
+
+      const grouped = {};
+      allChapters.forEach(ch => grouped[ch.id] = []);
+      allProblems.forEach(p => {
+        if (p.chapter_id && grouped[p.chapter_id]) grouped[p.chapter_id].push(p);
+        else {
+          if (!grouped['unassigned']) grouped['unassigned'] = [];
+          grouped['unassigned'].push(p);
+        }
+      });
+      const problems = grouped[activeMeeting] || [];
+
+      const draggedIdx = problems.findIndex(p => p.id === draggedProblemId);
+      const targetIdx = problems.findIndex(p => p.id === targetId);
+      if (draggedIdx === -1 || targetIdx === -1) return;
+
+      const [draggedItem] = problems.splice(draggedIdx, 1);
+      problems.splice(targetIdx, 0, draggedItem);
+
+      const problem_ids = problems.map(p => p.id);
+
+      try {
+        await apiFetch(`/api/courses/${courseId}/problems/reorder`, {
+          method: 'PUT',
+          body: JSON.stringify({ problem_ids })
+        });
+        loadProblems();
+      } catch (err) {
+        console.error('Failed to reorder', err);
+      }
+    }
+
+    function customConfirm(title, message) {
+      return new Promise(resolve => {
+        document.getElementById('confirm-title').innerText = title;
+        document.getElementById('confirm-message').innerText = message;
+        const modal = document.getElementById('confirm-modal');
+        modal.classList.add('show');
+
+        const cleanup = () => {
+          modal.classList.remove('show');
+          modal.onclick = null;
+        };
+
+        document.getElementById('confirm-ok').onclick = () => {
+          cleanup();
+          resolve(true);
+        };
+        document.getElementById('confirm-cancel').onclick = () => {
+          cleanup();
+          resolve(false);
+        };
+        modal.onclick = (e) => {
+          if (e.target === modal) {
+            cleanup();
+            resolve(false);
+          }
+        };
+      });
+    }
+
+    function customAlert(title, message) {
+      document.getElementById('detail-title').innerText = title;
+      document.getElementById('detail-content').innerText = message;
+      document.getElementById('detail-modal').classList.add('show');
+    }
+
+    async function deleteProblem(problemId) {
+      const isConfirmed = await customConfirm('Hapus Soal', 'Hapus soal ini? Tindakan ini tidak bisa dibatalkan.');
+      if (!isConfirmed) return;
+      await apiFetch(`/api/problems/${problemId}`, { method: 'DELETE' });
+      loadProblems();
+      loadStats();
+    }
+
+    let editingChapterId = null;
+
+    function openChapterModal() {
+      editingChapterId = null;
+      document.getElementById('chapter-modal-title').innerText = 'Tambah Bab Baru';
+      document.getElementById('ch-title').value = '';
+      document.getElementById('chapter-modal').classList.add('show');
+    }
+
+    function editChapterModal(e, id) {
+      e.stopPropagation();
+      const ch = allChapters.find(c => c.id === id);
+      if (!ch) return;
+      editingChapterId = ch.id;
+      document.getElementById('chapter-modal-title').innerText = 'Edit Bab';
+      document.getElementById('ch-title').value = ch.title;
+      document.getElementById('chapter-modal').classList.add('show');
+    }
+
+    async function saveChapter() {
+      const title = document.getElementById('ch-title').value.trim();
+      if (!title) return customAlert('Peringatan', 'Nama bab wajib diisi');
+
+      if (editingChapterId) {
+        await apiFetch(`/api/courses/${courseId}/chapters/${editingChapterId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ title })
+        });
+      } else {
+        await apiFetch(`/api/courses/${courseId}/chapters`, {
+          method: 'POST',
+          body: JSON.stringify({ title })
+        });
+      }
+      document.getElementById('chapter-modal').classList.remove('show');
+      loadProblems();
+    }
+
+    async function deleteChapter(e, id) {
+      e.stopPropagation();
+      const isConfirmed = await customConfirm('Hapus Bab', 'Yakin ingin menghapus bab ini? Soal di dalamnya akan dipindahkan ke "Soal Tanpa Bab".');
+      if (!isConfirmed) return;
+      await apiFetch(`/api/courses/${courseId}/chapters/${id}`, { method: 'DELETE' });
+      loadProblems();
+    }
+
+    let draggedChapterId = null;
+    function dragStart(e) {
+      draggedChapterId = e.currentTarget.dataset.id;
+      e.dataTransfer.effectAllowed = 'move';
+    }
+    function dragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+    async function drop(e) {
+      e.preventDefault();
+      const targetCard = e.currentTarget.closest('.chapter-card');
+      if (!targetCard) return;
+      const targetId = targetCard.dataset.id;
+      if (!draggedChapterId || draggedChapterId === targetId) return;
+
+      const oldIndex = allChapters.findIndex(c => c.id == draggedChapterId);
+      const newIndex = allChapters.findIndex(c => c.id == targetId);
+      if (oldIndex < 0 || newIndex < 0) return;
+
+      const [moved] = allChapters.splice(oldIndex, 1);
+      allChapters.splice(newIndex, 0, moved);
+
+      renderProblems();
+
+      const chapter_ids = allChapters.map(c => c.id);
+      await apiFetch(`/api/courses/${courseId}/chapters/reorder`, {
+        method: 'PUT',
+        body: JSON.stringify({ chapter_ids })
+      });
+    }
+
+    function renderTestCases(cases) {
+      const container = document.getElementById('cp-testcases-container');
+      if (!cases || cases.length === 0) {
+        cases = [{ input: '', output: '' }];
+      }
+      container.innerHTML = cases.map(tc => `
+        <div class="glass border border-white/10 rounded-xl p-3 relative group">
+          <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <div>
+              <label class="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Input</label>
+              <textarea rows="2" class="tc-input input-field w-full px-2 py-1.5 rounded-xl text-xs font-mono resize-none" placeholder="Contoh: 5...">${escHtml(tc.input || '')}</textarea>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Expected Output</label>
+              <textarea rows="2" class="tc-output input-field w-full px-2 py-1.5 rounded-xl text-xs font-mono resize-none" placeholder="Contoh: 9...">${escHtml(tc.output || '')}</textarea>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addTestCaseUI() {
+      const container = document.getElementById('cp-testcases-container');
+      container.insertAdjacentHTML('beforeend', `
+        <div class="glass border border-white/10 rounded-xl p-3 relative group animate-in">
+          <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <div>
+              <label class="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Input</label>
+              <textarea rows="2" class="tc-input input-field w-full px-2 py-1.5 rounded-xl text-xs font-mono resize-none" placeholder="Contoh: 5..."></textarea>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-gray-500 uppercase mb-1">Expected Output</label>
+              <textarea rows="2" class="tc-output input-field w-full px-2 py-1.5 rounded-xl text-xs font-mono resize-none" placeholder="Contoh: 9..."></textarea>
+            </div>
+          </div>
+        </div>
+      `);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    let editingProblemId = null;
+
+    function openCreateProblemModal() {
+      if (allChapters.length === 0) {
+        customAlert('Peringatan', 'Buat minimal satu bab terlebih dahulu.');
+        return;
+      }
+
+      editingProblemId = null;
+      document.getElementById('modal-title').innerText = 'Tambah Soal Baru';
+      const chSelect = document.getElementById('cp-chapter');
+      chSelect.innerHTML = allChapters.map(ch => `<option value="${ch.id}">${escHtml(ch.title)}</option>`).join('');
+
+      ['cp-title', 'cp-desc', 'cp-input-fmt', 'cp-output-fmt', 'cp-ex-in', 'cp-ex-out'].forEach(id => document.getElementById(id).value = '');
+      renderTestCases([]);
+      document.getElementById('cp-difficulty').value = 'easy';
+      document.getElementById('cp-timelimit').value = '5000';
+      document.getElementById('create-problem-modal').classList.add('show');
+    }
+
+    function editProblem(id) {
+      const p = allProblems.find(x => x.id === id);
+      if (!p) return;
+
+      editingProblemId = p.id;
+      document.getElementById('modal-title').innerText = 'Edit Soal';
+      const chSelect = document.getElementById('cp-chapter');
+      chSelect.innerHTML = allChapters.map(ch => `<option value="${ch.id}">${escHtml(ch.title)}</option>`).join('');
+      if (p.chapter_id) chSelect.value = p.chapter_id;
+
+      document.getElementById('cp-title').value = p.title;
+      document.getElementById('cp-desc').value = p.description;
+      document.getElementById('cp-input-fmt').value = p.input_format || '';
+      document.getElementById('cp-output-fmt').value = p.output_format || '';
+      document.getElementById('cp-ex-in').value = p.example_input || '';
+      document.getElementById('cp-ex-out').value = p.example_output || '';
+
+      let parsedTc = [];
+      try { parsedTc = typeof p.test_cases === 'string' ? JSON.parse(p.test_cases) : p.test_cases; } catch (e) { }
+      renderTestCases(parsedTc);
+
+      document.getElementById('cp-difficulty').value = p.difficulty;
+      document.getElementById('cp-timelimit').value = p.time_limit;
+      document.getElementById('create-problem-modal').classList.add('show');
+    }
+
+    async function createProblem() {
+      const chapterId = document.getElementById('cp-chapter').value;
+      const title = document.getElementById('cp-title').value.trim();
+      const description = document.getElementById('cp-desc').value.trim();
+      if (!title || !description || !chapterId) return customAlert('Peringatan', 'Bab, judul, dan deskripsi wajib diisi');
+
+      let tc = [];
+      const inputs = document.querySelectorAll('.tc-input');
+      const outputs = document.querySelectorAll('.tc-output');
+      for (let i = 0; i < inputs.length; i++) {
+        const inv = inputs[i].value;
+        const outv = outputs[i].value;
+        if (inv || outv) tc.push({ input: inv, output: outv });
+      }
+
+      const payload = {
+        course_id: courseId,
+        chapter_id: parseInt(chapterId),
+        title, description,
+        input_format: document.getElementById('cp-input-fmt').value,
+        output_format: document.getElementById('cp-output-fmt').value,
+        example_input: document.getElementById('cp-ex-in').value,
+        example_output: document.getElementById('cp-ex-out').value,
+        difficulty: document.getElementById('cp-difficulty').value,
+        time_limit: parseInt(document.getElementById('cp-timelimit').value) || 5000,
+        test_cases: tc
+      };
+
+      let url = '/api/problems';
+      let method = 'POST';
+      if (editingProblemId) {
+        url = `/api/problems/${editingProblemId}`;
+        method = 'PUT';
+      }
+
+      const data = await apiFetch(url, { method, body: JSON.stringify(payload) });
+      if (data && data.problem) {
+        document.getElementById('create-problem-modal').classList.remove('show');
+        loadProblems();
+        loadStats();
+      } else {
+        customAlert('Gagal Menyimpan', data?.error || 'Gagal menyimpan soal');
+      }
+    }
+
+    function showProblemDetails(id) {
+      const p = allProblems.find(x => x.id === id);
+      if (!p) return;
+      customAlert(`Detail Soal: ${p.title}`, `Deskripsi:\n${p.description}\n\nFormat Input:\n${p.input_format}\n\nFormat Output:\n${p.output_format}\n\nTest Cases:\n${p.test_cases ? (typeof p.test_cases === 'string' ? p.test_cases : JSON.stringify(p.test_cases, null, 2)) : '[]'}`);
+    }
+
+    async function loadMonitoring() {
+      if (!courseId) return;
+      const data = await apiFetch(`/api/analytics/class/${courseId}`);
+      const container = document.getElementById('monitoring-content');
+      if (!data) return;
+
+      if (data.students.length === 0) {
+        container.innerHTML = '<div class="glass-card rounded-2xl p-8 text-center text-gray-500"><div class="text-4xl mb-3">ðŸ‘¥</div><p>Belum ada siswa terdaftar di mata kuliah ini.</p></div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="p-4 border-b border-white/5 flex items-center justify-between">
+            <span class="text-sm font-semibold text-white">Algoritma dan Pemrograman</span>
+            <span class="text-xs text-gray-500">${data.students.length} siswa terdaftar</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-white/5">
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Siswa</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Selesai</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Run</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Error</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">AI Req.</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">AI Post Req.</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">AI Dep.</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Copy Risk</th>
+                  <th class="text-center px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.students.map(s => `
+                  <tr class="student-row">
+                    <td class="px-4 py-3">
+                      <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold">${s.name.charAt(0).toUpperCase()}</div>
+                        <div>
+                          <div class="font-semibold text-white">${escHtml(s.name)}</div>
+                          <div class="text-xs text-gray-500">${escHtml(s.email)}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-center"><span class="text-white font-semibold">${s.accepted_count}</span><span class="text-gray-500">/${s.total_problems}</span></td>
+                    <td class="px-4 py-3 text-center font-mono text-indigo-400">${s.total_compile}</td>
+                    <td class="px-4 py-3 text-center font-mono text-red-400">${s.total_error}</td>
+                    <td class="px-4 py-3 text-center font-mono text-amber-400">${s.total_ai_requests}</td>
+                    <td class="px-4 py-3 text-center font-mono text-purple-400">${s.total_ai_post_requests || 0}</td>
+                    <td class="px-4 py-3 text-center">${riskBadge(s.ai_dependency_label)}</td>
+                    <td class="px-4 py-3 text-center">${riskBadge(s.copy_score_label)}</td>
+                    <td class="px-4 py-3 text-center">
+                      ${data.problems && data.problems.length > 0
+          ? `<a href="/teacher/student-detail.html?student=${s.id}&course=${courseId}" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20 hover:bg-indigo-500/20">Review</a>`
+          : ''}
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+    }
+
+    async function loadEnrollments() {
+      if (!courseId) return;
+      const data = await apiFetch(`/api/analytics/pending-enrollments/${courseId}`);
+      const container = document.getElementById('enrollment-content');
+      if (!data) return;
+
+      if (data.pending.length === 0) {
+        container.innerHTML = '<div class="glass-card rounded-2xl p-6 text-center text-gray-500">Tidak ada pendaftaran yang menunggu persetujuan.</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <p class="text-sm text-gray-400 mb-4">${data.pending.length} siswa menunggu persetujuan.</p>
+        <div class="space-y-3">
+          ${data.pending.map(s => `
+            <div class="glass-card rounded-xl p-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">${s.name.charAt(0).toUpperCase()}</div>
+                <div>
+                  <div class="font-semibold text-white">${escHtml(s.name)}</div>
+                  <div class="text-xs text-gray-500">${escHtml(s.email)}</div>
+                  <div class="text-xs text-gray-600 mt-0.5">${new Date(s.enrolled_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="approveStudent(${s.id}, this)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 transition-colors">Setujui</button>
+                <button onclick="rejectStudent(${s.id}, this)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-colors">Tolak</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    async function approveStudent(studentId, btn) {
+      btn.disabled = true;
+      await apiFetch(`/api/courses/${courseId}/students/${studentId}/approve`, { method: 'POST' });
+      loadEnrollments();
+      loadStats();
+    }
+
+    async function rejectStudent(studentId, btn) {
+      btn.disabled = true;
+      await apiFetch(`/api/courses/${courseId}/students/${studentId}/reject`, { method: 'POST' });
+      loadEnrollments();
+      loadStats();
+    }
+
+    async function init() {
+      const token = getToken();
+      if (!token) { window.location.href = '/login'; return; }
+      const user = JSON.parse(localStorage.getItem('tc_user') || '{}');
+      if (user.role !== 'teacher') { window.location.href = '/student/dashboard.html'; return; }
+      const teacherNameEl = document.getElementById('teacher-name');
+      if (teacherNameEl) teacherNameEl.textContent = user.name || 'Dosen';
+      await initCourse();
+      const tab = localStorage.getItem('teacher_active_tab') || 'soal';
+      showSection(tab);
+    }
+
+    init();
+  </script>
+</body>
+
+</html>

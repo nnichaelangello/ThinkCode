@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThinkCode — AI-Resilient Coding Platform</title>
+  <meta name="description"
+    content="Platform pembelajaran coding berbasis proses dengan AI Socratic Tutor. Belajar algoritma dengan cara yang benar.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: #0a0a0f;
+    }
+
+    .gradient-bg {
+      background: radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        #0a0a0f;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .input-field {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .tab-btn {
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+    }
+
+    .floating-code {
+      position: fixed;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: rgba(99, 102, 241, 0.2);
+      pointer-events: none;
+      white-space: pre;
+      line-height: 1.6;
+      z-index: 0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .animate-delay-1 {
+      animation-delay: 0.1s;
+      opacity: 0;
+    }
+
+    .logo-pulse::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 12px;
+      border: 2px solid rgba(99, 102, 241, 0.5);
+      animation: pulse-ring 2s ease infinite;
+    }
+
+    .error-msg {
+      display: none;
+    }
+
+    .error-msg.show {
+      display: block;
+    }
+
+    .success-msg {
+      display: none;
+    }
+
+    .success-msg.show {
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+
+  <div class="floating-code" style="top: 10%; left: 3%">
+    def fibonacci(n):
+    if n &lt;= 1:
+    return n
+    return fib(n-1)
+    + fib(n-2)
+  </div>
+  <div class="floating-code" style="top: 60%; right: 4%">
+    for i in range(n):
+    for j in range(n):
+    if arr[j] > arr[j+1]:
+    arr[j], arr[j+1] =
+    arr[j+1], arr[j]
+  </div>
+  <div class="floating-code" style="bottom: 15%; left: 8%">
+    def binary_search(arr, x):
+    l, r = 0, len(arr)-1
+    while l <= r: mid=(l + r) // 2 if arr[mid]==x: return mid </div>
+
+      <div class="w-full max-w-md z-10">
+        <div class="text-center mb-8 animate-fade-in">
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 rounded-2xl glass-strong mb-4 relative logo-pulse">
+            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+          </div>
+          <h1 class="text-4xl font-black gradient-text mb-2">ThinkCode</h1>
+          <p class="text-gray-400 text-sm">AI-Resilient Coding Learning Platform</p>
+        </div>
+
+        <div class="glass-strong rounded-2xl p-8 animate-fade-in animate-delay-1">
+          <div class="flex glass rounded-xl p-1 mb-6" id="tabs">
+            <button id="tab-login" onclick="switchTab('login')"
+              class="tab-btn active flex-1 py-2.5 rounded-lg text-sm font-semibold text-white transition-all">
+              Masuk
+            </button>
+            <button id="tab-register" onclick="switchTab('register')"
+              class="tab-btn flex-1 py-2.5 rounded-lg text-sm font-semibold text-gray-400 transition-all">
+              Daftar
+            </button>
+          </div>
+
+          <div id="msg-error"
+            class="error-msg mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm"></div>
+          <div id="msg-success"
+            class="success-msg mb-4 p-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+          </div>
+
+          <form id="form-login" onsubmit="handleLogin(event)">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email</label>
+                <input id="login-email" type="email" placeholder="nama@email.com"
+                  class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+                <input id="login-password" type="password" placeholder="••••••••"
+                  class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+              </div>
+              <button type="submit" id="btn-login"
+                class="btn-primary w-full py-3 rounded-xl font-semibold text-white text-sm mt-2">
+                Masuk ke ThinkCode
+              </button>
+            </div>
+            <p class="text-center text-xs text-gray-500 mt-4">
+              Admin: <span class="font-mono text-indigo-400">teacher@thinkcode.id</span> / <span
+                class="font-mono text-indigo-400">admin123</span>
+            </p>
+          </form>
+
+          <form id="form-register" class="hidden" onsubmit="handleRegister(event)">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Nama
+                  Lengkap</label>
+                <input id="reg-name" type="text" placeholder="Nama kamu"
+                  class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email</label>
+                <input id="reg-email" type="email" placeholder="nama@email.com"
+                  class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+                <input id="reg-password" type="password" placeholder="Min. 6 karakter"
+                  class="input-field w-full px-4 py-3 rounded-xl text-sm" minlength="6" required>
+              </div>
+              <input type="hidden" id="role-student" name="role" value="student" checked>
+              <button type="submit" id="btn-register"
+                class="btn-primary w-full py-3 rounded-xl font-semibold text-white text-sm mt-2">
+                Buat Akun
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <script>
+        function switchTab(tab) {
+          const loginForm = document.getElementById('form-login');
+          const registerForm = document.getElementById('form-register');
+          const tabLogin = document.getElementById('tab-login');
+          const tabRegister = document.getElementById('tab-register');
+          clearMessages();
+
+          if (tab === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            tabLogin.classList.add('active');
+            tabLogin.classList.remove('text-gray-400');
+            tabLogin.classList.add('text-white');
+            tabRegister.classList.remove('active');
+            tabRegister.classList.add('text-gray-400');
+            tabRegister.classList.remove('text-white');
+          } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            tabRegister.classList.add('active');
+            tabRegister.classList.remove('text-gray-400');
+            tabRegister.classList.add('text-white');
+            tabLogin.classList.remove('active');
+            tabLogin.classList.add('text-gray-400');
+            tabLogin.classList.remove('text-white');
+          }
+        }
+
+        function showError(msg) {
+          const el = document.getElementById('msg-error');
+          el.textContent = msg;
+          el.classList.add('show');
+          document.getElementById('msg-success').classList.remove('show');
+        }
+
+        function showSuccess(msg) {
+          const el = document.getElementById('msg-success');
+          el.textContent = msg;
+          el.classList.add('show');
+          document.getElementById('msg-error').classList.remove('show');
+        }
+
+        function clearMessages() {
+          document.getElementById('msg-error').classList.remove('show');
+          document.getElementById('msg-success').classList.remove('show');
+        }
+
+        async function handleLogin(e) {
+          e.preventDefault();
+          const btn = document.getElementById('btn-login');
+          btn.textContent = 'Masuk...';
+          btn.disabled = true;
+          clearMessages();
+
+          const email = document.getElementById('login-email').value;
+          const password = document.getElementById('login-password').value;
+
+          try {
+            const res = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              showError(data.error || 'Login gagal');
+              return;
+            }
+            localStorage.setItem('tc_token', data.token);
+            localStorage.setItem('tc_user', JSON.stringify(data.user));
+
+            if (data.user.role === 'teacher') {
+              window.location.href = '/teacher/dashboard.html';
+            } else {
+              window.location.href = '/student/dashboard.html';
+            }
+          } catch {
+            showError('Tidak dapat terhubung ke server. Pastikan server berjalan.');
+          } finally {
+            btn.textContent = 'Masuk ke ThinkCode';
+            btn.disabled = false;
+          }
+        }
+
+        async function handleRegister(e) {
+          e.preventDefault();
+          const btn = document.getElementById('btn-register');
+          btn.textContent = 'Membuat akun...';
+          btn.disabled = true;
+          clearMessages();
+
+          const name = document.getElementById('reg-name').value;
+          const email = document.getElementById('reg-email').value;
+          const password = document.getElementById('reg-password').value;
+          const role = document.querySelector('input[name="role"]:checked')?.value || 'student';
+
+          try {
+            const res = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, password, role })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              showError(data.error || 'Registrasi gagal');
+              return;
+            }
+            showSuccess(data.message || 'Akun berhasil dibuat! Silakan masuk.');
+            setTimeout(() => switchTab('login'), 2000);
+          } catch {
+            showError('Tidak dapat terhubung ke server.');
+          } finally {
+            btn.textContent = 'Buat Akun';
+            btn.disabled = false;
+          }
+        }
+
+        const token = localStorage.getItem('tc_token');
+        const user = localStorage.getItem('tc_user');
+        if (token && user) {
+          const u = JSON.parse(user);
+          window.location.href = u.role === 'teacher' ? '/teacher/dashboard.html' : '/student/dashboard.html';
+        }
+      </script>
+</body>
+
+</html>

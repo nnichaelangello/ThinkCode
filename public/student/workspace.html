@@ -1,0 +1,1049 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workspace - ThinkCode</title>
+  <meta name="description" content="Coding workspace ThinkCode. Tulis, jalankan kode, dan tanya AI Mentor.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/theme/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.17/addon/edit/closebrackets.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+
+    body {
+      background: #0a0a0f;
+      color: #e2e8f0;
+      overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0f0f1a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2d2d3d;
+      border-radius: 3px;
+    }
+
+    .topbar {
+      background: #0f0f1a;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .panel-header {
+      background: #111127;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .CodeMirror {
+      height: 100% !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 13px !important;
+      line-height: 1.7 !important;
+      background: #0d0d1a !important;
+    }
+
+    .CodeMirror-scroll {
+      height: 100%;
+    }
+
+    .lang-badge {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-run {
+      background: linear-gradient(135deg, #10b981, #059669);
+      transition: all 0.2s;
+    }
+
+    .btn-run:hover {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-run:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-ai {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      transition: all 0.2s;
+    }
+
+    .btn-ai:hover {
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .output-area {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+
+    .output-success {
+      color: #10b981;
+    }
+
+    .output-error {
+      color: #f87171;
+    }
+
+    .output-info {
+      color: #94a3b8;
+    }
+
+    .ai-panel {
+      background: #0f0f1a;
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .ai-message-user {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px 12px 4px 12px;
+      align-self: flex-end;
+      max-width: 85%;
+    }
+
+    .ai-message-ai {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px 12px 12px 4px;
+      align-self: flex-start;
+      max-width: 90%;
+    }
+
+    .ai-message-ai.thinking {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .help-level-btn {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .help-level-btn.selected {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .help-level-btn:not(.selected) {
+      color: #64748b;
+    }
+
+    .help-level-btn:not(.selected):hover {
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .version-item {
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+      font-size: 12px;
+    }
+
+    .version-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .version-item.v-run {
+      border-left-color: #10b981;
+    }
+
+    .version-item.v-error {
+      border-left-color: #ef4444;
+    }
+
+    .version-item.v-edit {
+      border-left-color: #6366f1;
+    }
+
+    .version-item.v-submit {
+      border-left-color: #f59e0b;
+    }
+
+    .version-item.v-ai {
+      border-left-color: #a78bfa;
+    }
+
+    .tc-result-pass {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+    }
+
+    .tc-result-fail {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .bottom-tab-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bottom-tab-btn.active {
+      color: #818cf8;
+      border-bottom-color: #6366f1;
+    }
+
+    .split-left {
+      width: 380px;
+      flex-shrink: 0;
+    }
+
+    .split-right {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .resize-handle {
+      width: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      cursor: col-resize;
+      transition: background 0.2s;
+    }
+
+    .resize-handle:hover {
+      background: rgba(99, 102, 241, 0.5);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-spinner {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes dots {
+
+      0%,
+      20% {
+        content: '.';
+      }
+
+      40% {
+        content: '..';
+      }
+
+      60%,
+      100% {
+        content: '...';
+      }
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      background: #12121f;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 32px;
+      width: 90%;
+      max-width: 580px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+
+<body class="flex flex-col h-screen">
+
+  <header class="topbar flex items-center px-4 py-2.5 gap-4 z-10 flex-shrink-0">
+    <a href="/student/dashboard.html"
+      class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mr-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      </div>
+      <span class="font-bold text-white text-sm">ThinkCode</span>
+    </div>
+
+    <div class="flex-1 text-center">
+      <span id="problem-title-header" class="text-sm font-semibold text-white">Memuat soal...</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <div id="stats-bar" class="flex items-center gap-3 text-xs text-gray-500 font-mono">
+        <span><span id="stat-compile">0</span> compile</span>
+        <span><span id="stat-error">0</span> error</span>
+        <span><span id="stat-ai">0</span> AI Req</span>
+        <span id="stat-ai-post-container" class="hidden text-purple-400"><span id="stat-ai-post">0</span> AI Post</span>
+      </div>
+      <div id="timer-display" class="font-mono text-xs text-indigo-400 glass px-3 py-1.5 rounded-lg">00:00:00</div>
+      <button onclick="toggleAIPanel()" class="btn-ai px-3 py-1.5 rounded-lg text-xs font-semibold text-white">
+        AI Mentor
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <div class="split-left flex flex-col border-r border-white/5 overflow-hidden">
+      <div class="panel-header px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Deskripsi Soal</span>
+        <div id="diff-badge" class="hidden text-xs font-semibold px-2 py-0.5 rounded-full"></div>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 text-sm text-gray-300 leading-relaxed" id="problem-desc">
+        <div class="text-gray-500">Memuat...</div>
+      </div>
+    </div>
+
+    <div class="resize-handle flex-shrink-0" id="resizer"></div>
+
+    <div class="split-right flex flex-col overflow-hidden">
+      <div class="panel-header px-4 py-2 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500">Bahasa:</span>
+          <span class="lang-badge">Python</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-run" onclick="runCode()"
+            class="btn-run px-4 py-1.5 rounded-lg text-xs font-bold text-white flex items-center gap-1.5">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+            </svg>
+            Jalankan
+          </button>
+          <button id="btn-submit" onclick="submitCode()"
+            class="btn-submit px-4 py-1.5 rounded-lg text-xs font-bold text-white flex items-center gap-1.5">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Submit
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-hidden" style="height: 60%;">
+        <textarea id="code-editor"></textarea>
+      </div>
+
+      <div class="border-t border-white/5 flex-shrink-0" style="height: 40%;">
+        <div class="panel-header flex items-center px-4 py-1.5 gap-4 flex-shrink-0">
+          <button class="bottom-tab-btn active" data-tab="output" onclick="switchBottomTab('output')">Output</button>
+          <button class="bottom-tab-btn" data-tab="testcases" onclick="switchBottomTab('testcases')">Test Cases</button>
+          <button class="bottom-tab-btn" data-tab="history" onclick="switchBottomTab('history')">Riwayat Kode</button>
+        </div>
+
+        <div class="tab-panel active overflow-y-auto p-4 output-area" id="tab-output"
+          style="height: calc(100% - 36px);">
+          <div id="term-output" class="whitespace-pre-wrap font-mono text-sm text-gray-300">Klik "Jalankan" untuk
+            melihat output program kamu.</div>
+          <div id="term-input-container" class="hidden mt-1 flex items-center gap-2">
+            <span class="text-green-400 font-mono text-sm"></span>
+            <input type="text" id="term-input"
+              class="flex-1 bg-transparent border-none outline-none text-white font-mono text-sm"
+              placeholder="Ketik input di sini lalu tekan Enter..." autocomplete="off">
+          </div>
+        </div>
+
+        <div class="tab-panel overflow-y-auto p-4" id="tab-testcases" style="height: calc(100% - 36px);">
+          <div id="testcases-content" class="space-y-2">
+            <p class="text-gray-500 text-xs">Test case akan muncul setelah kamu submit.</p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-history" style="height: calc(100% - 36px); overflow-y: auto;">
+          <div id="history-list" class="p-3 space-y-1">
+            <p class="text-gray-500 text-xs px-3">Riwayat perubahan kode akan muncul di sini.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ai-panel" class="ai-panel w-80 flex-shrink-0" style="display: none;">
+      <div class="panel-header px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-xs">
+          </div>
+          <span class="text-sm font-semibold text-white">AI Mentor</span>
+        </div>
+        <button onclick="toggleAIPanel()" class="text-gray-500 hover:text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="px-3 py-2 border-b border-white/5 flex-shrink-0">
+        <div class="text-xs text-gray-500 mb-1.5">Level Bantuan:</div>
+        <div class="flex gap-1 flex-wrap">
+          <button class="help-level-btn" data-level="0" onclick="setHelpLevel(0, this)">Sendiri</button>
+          <button class="help-level-btn selected" data-level="1" onclick="setHelpLevel(1, this)">Konsep</button>
+          <button class="help-level-btn" data-level="2" onclick="setHelpLevel(2, this)">Hint</button>
+          <button class="help-level-btn" data-level="3" onclick="setHelpLevel(3, this)">Pseudo</button>
+          <button class="help-level-btn" data-level="4" onclick="setHelpLevel(4, this)">Approach</button>
+        </div>
+      </div>
+
+      <div id="ai-messages" class="flex-1 overflow-y-auto p-3 space-y-3 flex flex-col">
+        <div class="ai-message-ai p-3">
+          <p class="text-xs text-amber-400 font-semibold mb-1">AI Mentor</p>
+          <p class="text-xs text-gray-300">Halo! Saya AI Mentor ThinkCode. Saya akan membantumu
+            <strong>berpikir</strong>, bukan memberikan jawaban langsung. Tanyakan apa yang membingungkanmu!
+          </p>
+        </div>
+      </div>
+
+      <div class="p-3 border-t border-white/5 flex-shrink-0">
+        <div class="flex gap-2">
+          <input id="ai-input" type="text" placeholder="Tanya AI Mentor..."
+            class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-amber-500/50"
+            onkeydown="if(event.key==='Enter')askAI()">
+          <button onclick="askAI()" id="btn-ask-ai"
+            class="btn-ai px-3 py-2 rounded-xl text-xs font-bold text-white flex-shrink-0">
+          </button>
+        </div>
+        <div class="flex items-center gap-1 mt-1.5">
+          <input type="checkbox" id="include-code" class="accent-amber-500">
+          <label for="include-code" class="text-xs text-gray-500 cursor-pointer">Sertakan kode saat ini</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal-overlay">
+    <div class="modal-box w-full max-w-sm text-center">
+      <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h2 class="text-xl font-bold text-white mb-2" id="confirm-title">Konfirmasi</h2>
+      <p class="text-gray-400 text-sm mb-6" id="confirm-message">Apakah Anda yakin?</p>
+      <div class="flex gap-3">
+        <button id="confirm-cancel"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-gray-300 hover:text-white glass transition-colors">Batal</button>
+        <button id="confirm-ok"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/25">Yakin</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let editor = null;
+    let currentProblem = null;
+    let currentSubmission = null;
+    let helpLevel = 1;
+    let snapshotInterval = null;
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let compileCount = 0;
+    let errorCount = 0;
+    let aiCount = 0;
+    let aiPostCount = 0;
+
+    const DEFAULT_CODE = 'n = int(input())\n\n';
+
+    function getToken() { return localStorage.getItem('tc_token'); }
+
+    async function apiFetch(url, opts = {}) {
+      opts.headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}`, ...opts.headers };
+      const res = await fetch(url, opts);
+      if (res.status === 401) { window.location.href = '/login'; return null; }
+      return res.json();
+    }
+
+    function getProblemId() {
+      return new URLSearchParams(window.location.search).get('problem');
+    }
+
+    function initEditor() {
+      editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        mode: 'python',
+        theme: 'dracula',
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        lineWrapping: false,
+        extraKeys: { 'Ctrl-Enter': runCode, 'Cmd-Enter': runCode }
+      });
+
+      const editorDiv = document.querySelector('.CodeMirror');
+      if (editorDiv) editorDiv.style.height = '100%';
+
+      editor.setValue(DEFAULT_CODE);
+      editor.refresh();
+
+      let internalCopiedText = '';
+
+      editor.on("copy", (cm, e) => {
+        internalCopiedText = editor.getSelection();
+      });
+
+      editor.on("cut", (cm, e) => {
+        internalCopiedText = editor.getSelection();
+      });
+
+      editor.on("paste", (cm, e) => {
+        const text = e.clipboardData.getData('text/plain');
+        if (text && text.length > 50 && currentProblem) {
+          if (text === internalCopiedText) return; // Mengabaikan copy-paste dari dalam workspace itu sendiri
+
+          apiFetch('/api/submissions/flag_paste', {
+            method: 'POST',
+            body: JSON.stringify({ problem_id: currentProblem.id, length: text.length })
+          });
+        }
+      });
+    }
+
+    function switchBottomTab(name) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.bottom-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${name}`)?.classList.add('active');
+      document.querySelector(`.bottom-tab-btn[data-tab="${name}"]`)?.classList.add('active');
+      if (name === 'history') loadHistory();
+    }
+
+    function updateStats() {
+      document.getElementById('stat-compile').textContent = compileCount;
+      document.getElementById('stat-error').textContent = errorCount;
+      document.getElementById('stat-ai').textContent = aiCount;
+      if (aiPostCount > 0 || (currentSubmission && currentSubmission.status === 'accepted')) {
+        document.getElementById('stat-ai-post-container').classList.remove('hidden');
+        document.getElementById('stat-ai-post').textContent = aiPostCount;
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+
+      const updateDisplay = () => {
+        const h = Math.floor(timerSeconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((timerSeconds % 3600) / 60).toString().padStart(2, '0');
+        const s = (timerSeconds % 60).toString().padStart(2, '0');
+        document.getElementById('timer-display').textContent = `${h}:${m}:${s}`;
+      };
+
+      if (currentSubmission && currentSubmission.status === 'accepted') {
+        timerSeconds = currentSubmission.time_spent || 0;
+        updateDisplay();
+        return; // Don't start interval
+      }
+
+      if (currentSubmission && currentSubmission.time_spent !== undefined && currentSubmission.time_spent !== null) {
+        timerSeconds = currentSubmission.time_spent;
+      } else {
+        timerSeconds = 0;
+      }
+
+      updateDisplay();
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        updateDisplay();
+      }, 1000);
+    }
+
+    async function loadProblem() {
+      const pid = getProblemId();
+      if (!pid) {
+        document.getElementById('problem-desc').innerHTML = '<p class="text-red-400">Soal tidak ditemukan. Kembali ke dashboard.</p>';
+        return;
+      }
+
+      const data = await apiFetch(`/api/problems/${pid}`);
+      if (!data || !data.problem) return;
+
+      currentProblem = data.problem;
+      currentSubmission = data.submission;
+
+
+      document.title = `${data.problem.title} ThinkCode`;
+      document.getElementById('problem-title-header').textContent = data.problem.title;
+
+      const diffMap = { easy: 'Mudah', medium: 'Menengah', hard: 'Sulit' };
+      document.getElementById('problem-desc').innerHTML = `
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-semibold px-2 py-1 rounded-lg glass text-indigo-400">${diffMap[data.problem.difficulty] || data.problem.difficulty}</span>
+        </div>
+        <h2 class="text-base font-bold text-white mb-3">${escHtml(data.problem.title)}</h2>
+        <div class="text-sm text-gray-300 leading-relaxed mb-4">${escHtml(data.problem.description).replace(/\n/g, '<br>')}</div>
+        ${data.problem.input_format ? `<div class="mb-3"><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Format Input</p><div class="text-sm text-gray-300">${escHtml(data.problem.input_format).replace(/\n/g, '<br>')}</div></div>` : ''}
+        ${data.problem.output_format ? `<div class="mb-3"><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Format Output</p><div class="text-sm text-gray-300">${escHtml(data.problem.output_format).replace(/\n/g, '<br>')}</div></div>` : ''}
+        ${data.problem.constraints ? `<div class="mb-3"><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Batasan</p><div class="text-sm text-gray-300">${escHtml(data.problem.constraints).replace(/\n/g, '<br>')}</div></div>` : ''}
+        ${data.problem.example_input ? `
+        <div class="mt-4">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Contoh</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <p class="text-xs text-gray-500 mb-1">Input:</p>
+              <pre class="font-mono text-xs bg-black/30 p-3 rounded-lg text-green-400 overflow-x-auto">${escHtml(data.problem.example_input)}</pre>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 mb-1">Output:</p>
+              <pre class="font-mono text-xs bg-black/30 p-3 rounded-lg text-blue-400 overflow-x-auto">${escHtml(data.problem.example_output || '')}</pre>
+            </div>
+          </div>
+        </div>` : ''}
+      `;
+
+      if (data.submission && data.submission.final_code) {
+        editor.setValue(data.submission.final_code);
+      }
+
+      if (data.submission) {
+        compileCount = data.submission.compile_count || 0;
+        errorCount = data.submission.error_count || 0;
+        aiCount = data.submission.ai_request_count || 0;
+        aiPostCount = data.submission.ai_post_request_count || 0;
+
+        if (data.submission.status === 'accepted') {
+          editor.setOption('readOnly', 'nocursor');
+          const btnSubmit = document.getElementById('btn-submit');
+          btnSubmit.disabled = true;
+          btnSubmit.innerHTML = 'Selesai';
+          btnSubmit.classList.remove('btn-submit');
+          btnSubmit.classList.add('bg-green-500', 'cursor-not-allowed', 'opacity-80');
+          // Allow AI to be used post-accept
+          document.getElementById('btn-ask-ai').disabled = false;
+        }
+
+        updateStats();
+      }
+
+      startTimer(); // Restart timer with correct DB data
+    }
+
+    let executionWs = null;
+
+    async function runCode() {
+      const code = editor.getValue().trim();
+      if (!code) return;
+
+      const btn = document.getElementById('btn-run');
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-3 h-3 loading-spinner" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"/><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" class="opacity-75"/></svg> Running...';
+
+      const termOut = document.getElementById('term-output');
+      const termInC = document.getElementById('term-input-container');
+      const termIn = document.getElementById('term-input');
+
+      termOut.innerHTML = '';
+      termIn.value = '';
+      termInC.classList.remove('hidden');
+      switchBottomTabDirect('output');
+
+      termIn.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          const val = termIn.value;
+          termOut.innerHTML += `<span class="text-green-400 font-bold">${escHtml(val)}</span>\n`;
+          termIn.value = '';
+          if (executionWs) executionWs.send(JSON.stringify({ action: 'input', data: val + '\n' }));
+        }
+      };
+
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      executionWs = new WebSocket(`${protocol}//${window.location.host}/api/execute/ws`);
+
+      executionWs.onopen = () => {
+        executionWs.send(JSON.stringify({ action: 'run', code }));
+      };
+
+      executionWs.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'stdout') {
+          termOut.innerHTML += escHtml(msg.data);
+        } else if (msg.type === 'stderr') {
+          termOut.innerHTML += `<span class="text-red-400">${escHtml(msg.data)}</span>`;
+          if (!currentSubmission || currentSubmission.status !== 'accepted') {
+            // Only increment if not accepted (optional, since it's not saved to DB here anyway, but to keep UI logic consistent)
+          }
+        } else if (msg.type === 'exit') {
+          termInC.classList.add('hidden');
+          termOut.innerHTML += `\n<span class="text-gray-500 italic mt-2 block">Program selesai (exit code ${msg.code})</span>`;
+          executionWs.close();
+
+          if (!currentSubmission || currentSubmission.status !== 'accepted') {
+            compileCount++;
+            if (msg.code !== 0) errorCount++;
+            updateStats();
+          }
+        }
+        const tabOutput = document.getElementById('tab-output');
+        tabOutput.scrollTop = tabOutput.scrollHeight;
+      };
+
+      executionWs.onclose = () => {
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg> Jalankan';
+        termInC.classList.add('hidden');
+        executionWs = null;
+      };
+    }
+
+    async function submitCode() {
+      if (!currentProblem) return;
+      const code = editor.getValue().trim();
+      if (!code) return;
+
+      const isConfirmed = await customConfirm('Konfirmasi Submit', 'Yakin ingin submit? Pastikan kode sudah benar.');
+      if (!isConfirmed) return;
+
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const data = await apiFetch('/api/execute/judge', {
+        method: 'POST',
+        body: JSON.stringify({
+          problem_id: currentProblem.id,
+          code,
+          time_spent: timerSeconds,
+          compile_count: compileCount,
+          error_count: errorCount
+        })
+      });
+
+      if (!data) { btn.disabled = false; btn.textContent = 'Submit'; return; }
+
+      if (data.status === 'accepted') {
+        if (timerInterval) clearInterval(timerInterval);
+        editor.setOption('readOnly', 'nocursor');
+        btn.disabled = true;
+        btn.innerHTML = 'Selesai';
+        btn.classList.remove('btn-submit');
+        btn.classList.add('bg-green-500', 'cursor-not-allowed', 'opacity-80');
+        document.getElementById('btn-ask-ai').disabled = false;
+
+        if (!currentSubmission) currentSubmission = {};
+        currentSubmission.status = 'accepted';
+        updateStats();
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Submit';
+      }
+
+      const container = document.getElementById('testcases-content');
+      let html = `<div class="mb-3 p-3 rounded-xl ${data.status === 'accepted' ? 'bg-green-500/10 border border-green-500/20' : 'bg-red-500/10 border border-red-500/20'}">
+        <div class="font-bold text-sm ${data.status === 'accepted' ? 'text-green-400' : 'text-red-400'}">${data.status === 'accepted' ? 'Accepted!' : 'Wrong Answer'}</div>
+        <div class="text-xs text-gray-400 mt-1">${data.passed}/${data.total} test case passed</div>
+      </div>`;
+
+      html += data.results.map((r, i) => `
+        <div class="rounded-xl p-3 ${r.passed ? 'tc-result-pass' : 'tc-result-fail'} text-xs">
+          <div class="font-semibold mb-1">Test Case ${r.case}: ${r.passed ? 'Pass' : 'Fail'}</div>
+          ${!r.passed ? `<div class="mt-1"><span class="text-gray-400">Expected:</span> <code class="font-mono">${escHtml(r.expected)}</code></div>
+          <div><span class="text-gray-400">Got:</span> <code class="font-mono">${escHtml(r.actual)}</code></div>` : ''}
+          ${r.timedOut ? '<div class="text-red-400">Time Limit Exceeded</div>' : ''}
+          ${r.stderr ? `<div class="text-red-300 mt-1">${escHtml(r.stderr.slice(0, 100))}</div>` : ''}
+        </div>
+      `).join('');
+
+      container.innerHTML = html;
+      switchBottomTabDirect('testcases');
+
+      btn.disabled = false;
+      btn.textContent = 'Submit';
+    }
+
+    function switchBottomTabDirect(name) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.bottom-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${name}`)?.classList.add('active');
+      document.querySelector(`.bottom-tab-btn[data-tab="${name}"]`)?.classList.add('active');
+    }
+
+    async function loadHistory() {
+      if (!currentProblem) return;
+      const data = await apiFetch(`/api/submissions/problem/${currentProblem.id}/history`);
+      if (!data) return;
+
+      const container = document.getElementById('history-list');
+      if (!data.versions || data.versions.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-xs px-3">Belum ada riwayat kode.</p>';
+        return;
+      }
+
+      container.innerHTML = data.versions.map((v, i) => {
+        const typeClass = { run: 'v-run', error: 'v-error', edit: 'v-edit', submit: 'v-submit' }[v.change_type] || 'v-edit';
+        const typeIcon = { run: '', error: '', edit: '', submit: '' }[v.change_type] || '';
+        const time = new Date(v.timestamp).toLocaleTimeString('id-ID');
+        const safeCode = v.code_snapshot.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+        return `<div class="version-item ${typeClass}" onclick="previewVersion(${i}, '${safeCode}')">
+          <div class="flex items-center justify-between">
+            <span class="font-mono font-bold">${typeIcon} v${i + 1}</span>
+            <span class="text-gray-500">${time}</span>
+          </div>
+          <div class="text-gray-500 mt-0.5">${v.char_count} char ${v.change_type}</div>
+        </div>`;
+      }).join('');
+    }
+
+    async function previewVersion(idx, code) {
+      const decoded = code.replace(/\\n/g, '\n').replace(/\\'/g, "'");
+      const isConfirmed = await customConfirm('Muat Kode Lama', `Muat versi ${idx + 1} ke editor? Kode saat ini akan digantikan.`);
+      if (isConfirmed) {
+        editor.setValue(decoded);
+      }
+    }
+
+    function customConfirm(title, message) {
+      return new Promise(resolve => {
+        document.getElementById('confirm-title').innerText = title;
+        document.getElementById('confirm-message').innerText = message;
+        const modal = document.getElementById('confirm-modal');
+        modal.classList.add('show');
+
+        const cleanup = () => {
+          modal.classList.remove('show');
+          modal.onclick = null;
+        };
+
+        document.getElementById('confirm-ok').onclick = () => {
+          cleanup();
+          resolve(true);
+        };
+        document.getElementById('confirm-cancel').onclick = () => {
+          cleanup();
+          resolve(false);
+        };
+        modal.onclick = (e) => {
+          if (e.target === modal) {
+            cleanup();
+            resolve(false);
+          }
+        };
+      });
+    }
+
+    function setHelpLevel(level, btn) {
+      helpLevel = level;
+      document.querySelectorAll('.help-level-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function toggleAIPanel() {
+      const panel = document.getElementById('ai-panel');
+      panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+      panel.style.flexDirection = 'column';
+    }
+
+    async function askAI() {
+      const input = document.getElementById('ai-input');
+      const question = input.value.trim();
+      if (!question || !currentProblem) return;
+
+      input.value = '';
+      const code = document.getElementById('include-code').checked ? editor.getValue() : null;
+
+      const messagesEl = document.getElementById('ai-messages');
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'ai-message-user p-3';
+      userMsg.innerHTML = `<p class="text-xs text-indigo-400 font-semibold mb-1">Kamu</p><p class="text-xs text-gray-300">${escHtml(question)}</p>`;
+      messagesEl.appendChild(userMsg);
+
+      const thinkingMsg = document.createElement('div');
+      thinkingMsg.className = 'ai-message-ai p-3 thinking';
+      thinkingMsg.innerHTML = `<p class="text-xs text-amber-400 font-semibold mb-1">AI Mentor</p><p class="text-xs">Sedang berpikir...</p>`;
+      messagesEl.appendChild(thinkingMsg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      if (!currentSubmission || currentSubmission.status !== 'accepted') {
+        aiCount++;
+      } else {
+        aiPostCount++;
+      }
+      updateStats();
+
+      const btn = document.getElementById('btn-ask-ai');
+      btn.disabled = true;
+
+      const lastError = document.getElementById('term-output') ? document.getElementById('term-output').innerText : '';
+      const testcaseResults = document.getElementById('testcases-content') ? document.getElementById('testcases-content').innerText : '';
+
+      try {
+        const data = await apiFetch('/api/ai/ask', {
+          method: 'POST',
+          body: JSON.stringify({
+            problem_id: currentProblem.id,
+            code,
+            question,
+            help_level: helpLevel,
+            last_error: lastError,
+            testcase_results: testcaseResults
+          })
+        });
+
+        const responseText = data?.response || data?.fallback || 'AI tidak dapat merespons saat ini.';
+        thinkingMsg.classList.remove('thinking');
+        thinkingMsg.innerHTML = `<p class="text-xs text-amber-400 font-semibold mb-1">AI Mentor <span class="text-gray-600 font-normal">(Level ${helpLevel})</span></p><p class="text-xs text-gray-300 whitespace-pre-wrap">${escHtml(responseText)}</p>`;
+      } catch {
+        thinkingMsg.innerHTML = `<p class="text-xs text-red-400">AI Mentor tidak tersedia saat ini.</p>`;
+      } finally {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        btn.disabled = false;
+      }
+    }
+
+    let lastSavedCode = DEFAULT_CODE;
+
+    function startSnapshotInterval() {
+      snapshotInterval = setInterval(async () => {
+        if (!currentProblem || !editor) return;
+        const code = editor.getValue();
+        if (!code.trim() || code === lastSavedCode) return;
+        lastSavedCode = code;
+        await apiFetch('/api/submissions/snapshot', {
+          method: 'POST',
+          body: JSON.stringify({
+            problem_id: currentProblem.id,
+            code,
+            language: 'python',
+            time_spent: timerSeconds,
+            compile_count: compileCount,
+            error_count: errorCount
+          })
+        });
+      }, 30000);
+    }
+
+    function escHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    async function init() {
+      const token = getToken();
+      if (!token) { window.location.href = '/login'; return; }
+
+      initEditor();
+      await loadProblem();
+      startSnapshotInterval();
+    }
+
+    window.addEventListener('beforeunload', () => {
+      if (currentProblem && (!currentSubmission || currentSubmission.status !== 'accepted')) {
+        const code = editor.getValue();
+        fetch('/api/submissions/snapshot', {
+          method: 'POST',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            problem_id: currentProblem.id,
+            code,
+            language: 'python',
+            time_spent: timerSeconds,
+            compile_count: compileCount,
+            error_count: errorCount,
+            ai_request_count: aiCount
+          })
+        });
+      }
+    });
+
+    init();
+  </script>
+</body>
+
+</html>

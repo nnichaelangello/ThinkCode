@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThinkCode — Platform Pembelajaran Coding Berbasis Proses</title>
+  <meta name="description"
+    content="ThinkCode membantu pengajar memantau proses berpikir mahasiswa dalam belajar coding, bukan sekadar hasil akhirnya.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #7c3aed;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --text-light: #9ca3af;
+      --border: #e5e7eb;
+      --bg: #ffffff;
+      --bg-soft: #f9fafb;
+      --bg-muted: #f3f4f6;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-main);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--text-main);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-sub);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .hero {
+      padding: 140px 24px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eef2ff;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .hero h1 {
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      color: var(--text-main);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+    }
+
+    .hero p {
+      color: var(--text-sub);
+      font-size: 17px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 460px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-visual {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      font-size: 13px;
+    }
+
+    .visual-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-r {
+      background: #f87171;
+    }
+
+    .dot-y {
+      background: #fbbf24;
+    }
+
+    .dot-g {
+      background: #34d399;
+    }
+
+    .visual-title {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-left: 4px;
+      font-family: monospace;
+    }
+
+    section {
+      padding: 80px 0;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      color: var(--text-sub);
+      font-size: 16px;
+      max-width: 520px;
+    }
+
+    .section-head {
+      margin-bottom: 48px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: #c7d2fe;
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: #eef2ff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      font-size: 20px;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.65;
+    }
+
+    .bg-soft-section {
+      background: var(--bg-soft);
+    }
+
+    .cta-section {
+      background: var(--primary);
+      padding: 80px 0;
+    }
+
+    .cta-inner {
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .cta-inner h2 {
+      font-size: 30px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+
+    .cta-inner p {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 16px;
+      margin-bottom: 32px;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .btn-white:hover {
+      background: #eef2ff;
+      transform: translateY(-1px);
+    }
+
+    footer {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 120px 24px 60px;
+        gap: 40px;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">Think<span>Code</span></a>
+      <a href="/login" class="btn btn-primary">Masuk ke Platform</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <section class="hero-section" style="padding: 0;">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+            MVP — Minimum Viable Product
+          </div>
+          <h1>Belajar Coding yang <span>Benar-Benar</span> Terukur</h1>
+          <p>ThinkCode adalah platform coding berbasis proses untuk mahasiswa. Dosen dapat memantau bagaimana mahasiswa
+            berpikir dan mengerjakan soal, bukan hanya melihat jawaban akhirnya.</p>
+          <div class="hero-actions">
+            <a href="/login" class="btn btn-primary">Masuk ke Platform</a>
+            <a href="#fitur" class="btn btn-outline">Lihat Fitur</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="visual-header">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="visual-title">solution.py</span>
+          </div>
+          <pre class="terminal-code"><span class="tc-kw">def</span> <span class="tc-fn">hitung_faktorial</span>(n):
+    <span class="tc-kw">if</span> n <span class="tc-op">&lt;=</span> <span class="tc-num">1</span>:
+        <span class="tc-kw">return</span> <span class="tc-num">1</span>
+    <span class="tc-kw">return</span> n <span class="tc-op">*</span> hitung_faktorial(n <span class="tc-op">-</span> <span class="tc-num">1</span>)
+
+n <span class="tc-op">=</span> <span class="tc-fn">int</span>(<span class="tc-fn">input</span>(<span class="tc-str">"Masukkan n: "</span>))
+hasil <span class="tc-op">=</span> hitung_faktorial(n)
+<span class="tc-fn">print</span>(<span class="tc-str">f"Faktorial dari {n} = {hasil}"</span>)</pre>
+          <div class="terminal-output">
+            <span class="tc-prompt">$</span> python solution.py
+            <br>Masukkan n: <span class="tc-input">5</span>
+            <br>Faktorial dari 5 = <span class="tc-result">120</span>
+            <br><span class="tc-pass">✓ All test cases passed (3/3)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fitur" class="bg-soft-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-label">Fitur Platform</div>
+          <h2 class="section-title">Apa yang Bisa Dilakukan ThinkCode</h2>
+          <p class="section-sub">Dirancang untuk mendukung proses belajar yang transparan antara dosen dan mahasiswa.
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
+            </div>
+            <div class="feature-title">Editor & Eksekusi Kode</div>
+            <div class="feature-desc">Mahasiswa dapat menulis dan menjalankan kode Python langsung di browser. Tersedia
+              terminal interaktif dengan dukungan input pengguna.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" />
+                <path d="M12 8v4l3 3" />
+              </svg>
+            </div>
+            <div class="feature-title">AI Mentor Socratic</div>
+            <div class="feature-desc">AI tidak langsung memberikan jawaban. Ia membimbing mahasiswa berpikir melalui
+              pertanyaan-pertanyaan yang terarah sesuai level bantuan yang dipilih.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+            </div>
+            <div class="feature-title">Monitoring Proses</div>
+            <div class="feature-desc">Dosen dapat melihat jumlah kompilasi, error, penggunaan AI, serta riwayat
+              perubahan kode mahasiswa untuk setiap soal yang dikerjakan.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="9" y1="21" x2="9" y2="9" />
+              </svg>
+            </div>
+            <div class="feature-title">Kelola Soal & Bab</div>
+            <div class="feature-desc">Dosen dapat membuat soal latihan lengkap dengan deskripsi, format input/output,
+              batasan, dan test case yang diuji secara otomatis.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+            <div class="feature-title">Deteksi Kemiripan</div>
+            <div class="feature-desc">Sistem menganalisis kesamaan kode antar mahasiswa menggunakan perbandingan token
+              untuk membantu dosen mengidentifikasi pola pengerjaan yang mencurigakan.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              </svg>
+            </div>
+            <div class="feature-title">Manajemen Kelas</div>
+            <div class="feature-desc">Dosen bisa membuka kelas, menyetujui pendaftaran mahasiswa, mengatur visibilitas
+              soal, dan memantau progres seluruh kelas secara terpusat.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-section">
+      <div class="cta-inner">
+        <h2>Siap Mencoba ThinkCode?</h2>
+        <p>Masuk ke platform dan mulai kelola kelas atau kerjakan soal pertama Anda.</p>
+        <a href="/login" class="btn btn-white">Masuk ke Platform</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">ThinkCode</div>
+      <div class="footer-text">Platform Pembelajaran Coding Berbasis Proses · MVP 2026</div>
+    </div>
+  </footer>
+
+</body>
+
+</html>

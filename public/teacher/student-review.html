@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Siswa - ThinkCode</title>
+  <meta name="description" content="Detail review aktivitas coding siswa - ThinkCode.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: #0a0a0f;
+      color: #e2e8f0;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0f0f1a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2d2d3d;
+      border-radius: 3px;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .risk-low {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .risk-medium {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .risk-high {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .risk-moderate {
+      background: rgba(251, 146, 60, 0.12);
+      color: #fb923c;
+      border: 1px solid rgba(251, 146, 60, 0.3);
+    }
+
+    .risk-good {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .risk-poor {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .risk-review {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 19px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid;
+      flex-shrink: 0;
+    }
+
+    .dot-start {
+      background: #6366f1;
+      border-color: #818cf8;
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+    }
+
+    .dot-run {
+      background: #10b981;
+      border-color: #34d399;
+    }
+
+    .dot-error {
+      background: #ef4444;
+      border-color: #f87171;
+    }
+
+    .dot-edit {
+      background: #6366f1;
+      border-color: #818cf8;
+    }
+
+    .dot-submit {
+      background: #f59e0b;
+      border-color: #fbbf24;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+    }
+
+    .dot-ai {
+      background: #a78bfa;
+      border-color: #c4b5fd;
+    }
+
+    .code-diff-view {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: #0d0d1a;
+      border-radius: 12px;
+      padding: 16px;
+      overflow-x: auto;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre;
+      line-height: 1.7;
+    }
+
+    .ai-chat-bubble {
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px;
+    }
+
+    .ai-bubble-user {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .ai-bubble-ai {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-mini {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .animate-in {
+      animation: fadeIn 0.4s ease;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+
+  <header
+    class="sticky top-0 z-10 bg-black/40 backdrop-blur-xl border-b border-white/5 px-6 py-3 flex items-center gap-4">
+    <a href="#" id="back-btn"
+      class="btn-back px-4 py-2 rounded-xl text-sm font-medium text-gray-400 flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      Kembali
+    </a>
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      </div>
+      <span class="font-bold text-white text-sm">ThinkCode</span>
+      <span class="text-gray-600 text-sm">/</span>
+      <span class="text-sm text-gray-400" id="header-subtitle">Review Siswa</span>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto p-6">
+    <div id="loading-state" class="text-center py-20">
+      <div class="text-4xl mb-4"></div>
+      <p class="text-gray-500">Memuat data...</p>
+    </div>
+
+    <div id="main-content" class="hidden animate-in">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+        <div class="xl:col-span-1 space-y-6">
+
+          <div class="glass-card rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl"
+                id="student-avatar">?</div>
+              <div>
+                <h2 class="font-bold text-white text-lg" id="student-name">-</h2>
+                <p class="text-gray-500 text-xs" id="student-email">-</p>
+              </div>
+            </div>
+            <div class="border-t border-white/5 pt-3">
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Soal Dikerjakan</p>
+              <p class="text-sm font-semibold text-white" id="problem-name">-</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="text-sm font-bold text-white mb-4">Risk Analysis</h3>
+            <div class="space-y-3" id="risk-analysis">
+              <p class="text-gray-500 text-sm">Memuat...</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="text-sm font-bold text-white mb-4">Statistik</h3>
+            <div class="grid grid-cols-2 gap-3" id="stats-grid"></div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="text-sm font-bold text-white mb-4">Log AI Mentor</h3>
+            <div class="space-y-3 max-h-64 overflow-y-auto" id="ai-logs-list">
+              <p class="text-gray-500 text-xs">Belum ada interaksi AI</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="xl:col-span-2 space-y-6">
+
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="text-sm font-bold text-white mb-5">Timeline Aktivitas</h3>
+            <div class="relative pl-8" id="timeline-container">
+              <div class="timeline-line"></div>
+              <p class="text-gray-500 text-sm">Memuat timeline...</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-white">Riwayat Kode</h3>
+              <span class="text-xs text-gray-500" id="versions-count">0 versi</span>
+            </div>
+            <div class="flex gap-4" style="height: 350px;">
+              <div class="w-40 flex-shrink-0 overflow-y-auto space-y-1.5 pr-2" id="version-list"></div>
+              <div class="flex-1 overflow-hidden">
+                <div class="text-xs text-gray-500 mb-2" id="version-info">Pilih versi untuk melihat kode</div>
+                <div class="code-diff-view h-full" id="code-preview"><span class="text-gray-600">Pilih versi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5">
+            <h3 class="text-sm font-bold text-white mb-4">Kode Final</h3>
+            <div id="final-code-block" class="code-diff-view text-gray-300">Belum ada kode final.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getToken() { return localStorage.getItem('tc_token'); }
+    function escHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    async function apiFetch(url, opts = {}) {
+      opts.headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}`, ...opts.headers };
+      const res = await fetch(url, opts);
+      if (res.status === 401) { window.location.href = '/login'; return null; }
+      return res.json();
+    }
+
+    function riskBadge(label) {
+      const cls = { LOW: 'risk-low', MEDIUM: 'risk-medium', HIGH: 'risk-high', MODERATE: 'risk-moderate', GOOD: 'risk-good', POOR: 'risk-poor', 'NEEDS REVIEW': 'risk-review', INDEPENDENT: 'risk-low' };
+      return `<span class="text-xs font-bold px-2 py-0.5 rounded-full ${cls[label] || 'risk-low'}">${label}</span>`;
+    }
+
+    function getParams() {
+      const p = new URLSearchParams(window.location.search);
+      return { studentId: p.get('student'), problemId: p.get('problem') };
+    }
+
+    function formatTime(ts) {
+      return new Date(ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function formatDateTime(ts) {
+      return new Date(ts).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    let allVersions = [];
+
+    async function load() {
+      const { studentId, problemId } = getParams();
+      if (!studentId || !problemId) {
+        document.getElementById('loading-state').innerHTML = '<p class="text-red-400">Parameter tidak lengkap.</p>';
+        return;
+      }
+
+      const data = await apiFetch(`/api/analytics/student/${studentId}/problem/${problemId}`);
+      if (!data) return;
+
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('main-content').classList.remove('hidden');
+
+      const courseId = data.problem?.course_id || '';
+      document.getElementById('back-btn').href = `/teacher/student-detail.html?student=${studentId}&course=${courseId}`;
+
+      document.getElementById('header-subtitle').textContent = `${data.student?.name || ''} - ${data.problem?.title || ''}`;
+      document.getElementById('student-name').textContent = data.student?.name || '-';
+      document.getElementById('student-email').textContent = data.student?.email || '-';
+      document.getElementById('student-avatar').textContent = (data.student?.name || '?').charAt(0).toUpperCase();
+      document.getElementById('problem-name').textContent = data.problem?.title || '-';
+
+      if (data.submission === null) {
+        document.getElementById('risk-analysis').innerHTML = '<p class="text-gray-500 text-sm p-4 text-center">Siswa belum mengerjakan soal ini.</p>';
+        renderStats({}, null);
+        renderTimeline([]);
+        renderVersions([]);
+        renderAILogs([]);
+        document.getElementById('final-code-block').textContent = 'Belum ada kode final.';
+        return;
+      }
+
+      renderRiskAnalysis(data.riskAnalysis);
+      renderStats(data.submission, data.riskAnalysis);
+      renderTimeline(data.timeline);
+      renderVersions(data.versions);
+      renderAILogs(data.aiLogs);
+
+      if (data.submission.final_code) {
+        document.getElementById('final-code-block').textContent = data.submission.final_code;
+      }
+    }
+
+    function renderRiskAnalysis(risk) {
+      if (!risk) return;
+      document.getElementById('risk-analysis').innerHTML = `
+        <div class="flex justify-between items-center py-2 border-b border-white/5">
+          <span class="text-xs text-gray-400">AI Dependency</span>
+          ${riskBadge(risk.ai_dependency?.label || 'LOW')}
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-white/5">
+          <span class="text-xs text-gray-400">AI Generated</span>
+          ${riskBadge(risk.ai_generated || 'LOW')}
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-white/5">
+          <span class="text-xs text-gray-400">Copy Paste Risk</span>
+          ${riskBadge(risk.copy_paste || 'LOW')}
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-xs text-gray-400">Understanding</span>
+          ${riskBadge(risk.understanding || 'GOOD')}
+        </div>
+        ${risk.sudden_jumps && risk.sudden_jumps.length > 0 ? `
+          <div class="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+            <p class="text-xs font-semibold text-red-400 mb-1">Sudden Code Jump Detected</p>
+            ${risk.sudden_jumps.map(j => `<p class="text-xs text-gray-400">+${j.charIncrease} chars (+${j.percentage}%) at ${formatTime(j.to)}</p>`).join('')}
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function renderStats(sub, risk) {
+      document.getElementById('stats-grid').innerHTML = [
+        { label: 'Compile', value: sub.compile_count || 0, color: 'text-indigo-400' },
+        { label: 'Error', value: sub.error_count || 0, color: 'text-red-400' },
+        { label: 'AI Req.', value: sub.ai_request_count || 0, color: 'text-amber-400' },
+        { label: 'Revisi', value: risk?.total_revisions || 0, color: 'text-purple-400' },
+        { label: 'AI Score', value: `${Math.round(sub.ai_dependency_score || 0)}%`, color: sub.ai_dependency_score > 70 ? 'text-red-400' : 'text-green-400' },
+        { label: 'Copy', value: `${Math.round(sub.copy_score || 0)}%`, color: sub.copy_score > 70 ? 'text-red-400' : 'text-green-400' },
+        { label: 'Process', value: sub.process_score ? `${Math.round(sub.process_score)}` : '', color: 'text-indigo-400' },
+        { label: 'Status', value: sub.status === 'accepted' ? 'Selesai' : sub.status === 'in_progress' ? 'Dikerjakan' : sub.status ? 'Salah' : '—', color: sub.status === 'accepted' ? 'text-green-400' : sub.status === 'in_progress' ? 'text-amber-400' : sub.status ? 'text-red-400' : 'text-gray-500' }
+      ].map(s => `<div class="stat-mini"><div class="text-lg font-black ${s.color}">${s.value}</div><div class="text-xs text-gray-500 mt-0.5">${s.label}</div></div>`).join('');
+    }
+
+    function renderTimeline(timeline) {
+      if (!timeline || timeline.length === 0) {
+        document.getElementById('timeline-container').innerHTML = '<p class="text-gray-500 text-sm">Tidak ada data timeline.</p>';
+        return;
+      }
+
+      const dotClass = { start: 'dot-start', run: 'dot-run', error: 'dot-error', edit: 'dot-edit', submit: 'dot-submit', ai: 'dot-ai' };
+      const container = document.getElementById('timeline-container');
+
+      container.innerHTML = '<div class="timeline-line"></div>' + timeline.map((e, i) => `
+        <div class="flex items-start gap-3 mb-5 relative">
+          <div class="timeline-dot ${dotClass[e.type] || 'dot-edit'} mt-0.5"></div>
+          <div class="flex-1 pb-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold text-white">${escHtml(e.label)}</span>
+              <span class="text-xs font-mono text-gray-500">${formatTime(e.time)}</span>
+            </div>
+            ${e.type === 'ai' && e.prompt ? `<p class="text-xs text-gray-500 mt-1 italic">"${escHtml(e.prompt)}..."</p>` : ''}
+            ${e.char_count ? `<p class="text-xs text-gray-600 mt-0.5">${e.char_count} karakter</p>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderVersions(versions) {
+      allVersions = versions;
+      document.getElementById('versions-count').textContent = `${versions.length} versi`;
+      const listEl = document.getElementById('version-list');
+
+      if (versions.length === 0) {
+        listEl.innerHTML = '<p class="text-gray-500 text-xs">Tidak ada riwayat</p>';
+        return;
+      }
+
+      const typeColor = { run: 'text-green-400', error: 'text-red-400', edit: 'text-indigo-400', submit: 'text-amber-400' };
+      const typeIcon = { run: '', error: '', edit: '', submit: '' };
+
+      listEl.innerHTML = versions.map((v, i) => `
+        <div class="cursor-pointer px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/10" onclick="previewVersion(${i})" id="vitem-${i}">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold ${typeColor[v.change_type] || 'text-gray-400'}">${typeIcon[v.change_type] || ''} v${i + 1}</span>
+          </div>
+          <div class="text-xs text-gray-600">${formatTime(v.timestamp)}</div>
+          <div class="text-xs text-gray-600">${v.char_count}c</div>
+        </div>
+      `).join('');
+
+      if (versions.length > 0) previewVersion(versions.length - 1);
+    }
+
+    function previewVersion(idx) {
+      const v = allVersions[idx];
+      if (!v) return;
+
+      document.querySelectorAll('[id^="vitem-"]').forEach(el => el.classList.remove('bg-white/5', 'border-indigo-500/30'));
+      const item = document.getElementById(`vitem-${idx}`);
+      if (item) item.classList.add('bg-white/5', 'border-indigo-500/30');
+
+      const typeMap = { run: 'Dijalankan', error: 'Error saat run', edit: 'Diedit', submit: 'Submit' };
+      document.getElementById('version-info').textContent = `v${idx + 1} - ${typeMap[v.change_type] || v.change_type} - ${formatDateTime(v.timestamp)} - ${v.char_count} karakter`;
+      document.getElementById('code-preview').textContent = v.code_snapshot || '(kosong)';
+    }
+
+    function renderAILogs(logs) {
+      const container = document.getElementById('ai-logs-list');
+      if (!logs || logs.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-600">Tidak ada interaksi AI.</p>';
+        return;
+      }
+      container.innerHTML = logs.map(log => `
+        <div class="space-y-1.5">
+          <div class="ai-chat-bubble ai-bubble-user">
+            <div class="text-xs font-semibold text-indigo-400 mb-0.5">Siswa - ${formatTime(log.timestamp)} - Level ${log.help_level}</div>
+            <div class="text-xs text-gray-300">${escHtml(log.prompt)}</div>
+          </div>
+          <div class="ai-chat-bubble ai-bubble-ai">
+            <div class="text-xs font-semibold text-amber-400 mb-0.5">AI Mentor</div>
+            <div class="text-xs text-gray-400">${escHtml((log.response || '').slice(0, 200))}${log.response?.length > 200 ? '...' : ''}</div>
+          </div>
+        </div>
+      `).join('<div class="border-t border-white/5 my-2"></div>');
+    }
+
+    const token = getToken();
+    if (!token) window.location.href = '/login';
+    else {
+      const user = JSON.parse(localStorage.getItem('tc_user') || '{}');
+      if (user.role !== 'teacher') window.location.href = '/student/dashboard.html';
+      else load();
+    }
+  </script>
+</body>
+
+</html>
