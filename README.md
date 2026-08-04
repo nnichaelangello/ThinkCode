@@ -92,7 +92,7 @@ ThinkCode targets a specific gap not covered by existing platforms. The table be
 
 ## Experiment Results
 
-ThinkCode was tested using a three-session experimental design with a total of **1,050 coding sessions** (350 per session), designed to measure the real-world impact of platform monitoring and AI Mentor presence on student learning behavior.
+ThinkCode was tested using a three-session experimental design with a total of **1,050 coding sessions** conducted across 350 students, each completing three sessions under different experimental conditions, designed to measure the real-world impact of platform monitoring and AI Mentor presence on student learning behavior.
 
 ### Experimental Design
 
