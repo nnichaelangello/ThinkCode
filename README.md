@@ -61,25 +61,6 @@ The platform introduces three core innovations:
 
 ---
 
-## Comparison with Existing Platforms
-
-ThinkCode targets a specific gap not covered by existing platforms. The table below compares ThinkCode against widely used programming education platforms:
-
-| Feature | DQLab | Codio | Replit for Education | HackerRank | ThinkCode |
-|---|:---:|:---:|:---:|:---:|:---:|
-| Auto-Grading via Test Cases | Available | Available | Available | Available | Available |
-| In-Platform Code Execution | Available | Available | Available | Available | Available |
-| Plagiarism Detection | No | Available | No | Available | Available |
-| AI Dependency Tracker | No | No | No | No | Available |
-| Socratic AI Mentor (Tiered) | No | No | No | No | Available |
-| Process-Based Assessment | No | No | No | No | Available |
-| Multi-Language Support | No | Available | Available | Available | Not yet available* |
-| Built-in Question Bank | No | Available | Available | Available | Not yet available* |
-
-> *Multi-language support and a built-in question bank are planned for future releases (see Development Roadmap). ThinkCode is currently the only platform combining AI dependency detection, structured Socratic mentoring, and process-based assessment in a single self-hostable environment.
-
----
-
 ## Who Benefits
 
 | Stakeholder | Benefit from ThinkCode |
@@ -98,11 +79,11 @@ Unlike conventional AI assistants that hand over solutions immediately, the buil
 
 | Level | Mentor Behavior |
 |---|---|
-| Level 0 | No technical guidance. Moral support and encouragement only. |
-| Level 1 | Conceptual questions. The AI redirects the student toward theoretical understanding. |
-| Level 2 | Error localization. The AI narrows down which part of the code is problematic. |
-| Level 3 | Logic scaffolding in plain language (pseudocode only, no real code). |
-| Level 4 | Full architectural guidance, but writing executable code remains strictly forbidden. |
+| Level 1 | No technical guidance. Moral support and encouragement only. |
+| Level 2 | Conceptual questions. The AI redirects the student toward theoretical understanding. |
+| Level 3 | Error localization. The AI narrows down which part of the code is problematic. |
+| Level 4 | Logic scaffolding in plain language (pseudocode only, no real code). |
+| Level 5 | Full architectural guidance, but writing executable code remains strictly forbidden. |
 
 The AI runs entirely **on-premise** via Ollama using the `qwen2.5-coder:3b` model. No student data is sent to any external server.
 
@@ -248,7 +229,7 @@ Visit `http://localhost:3000` in your browser.
 1. Register and join an available class
 2. Browse the list of problems and open the coding workspace
 3. Write code in the editor and run it using the real-time terminal
-4. If you get stuck, open the AI Mentor panel and choose a help level (0 to 4)
+4. If you get stuck, open the AI Mentor panel and choose a help level (1 to 5)
 5. Submit your solution when ready; the system will automatically grade it and calculate your Process Score
 
 ---
@@ -278,14 +259,6 @@ Visit `http://localhost:3000` in your browser.
 - [ ] Responsive mobile interface for broader accessibility
 - [ ] Exportable analytics reports (PDF / CSV) for institutional use
 - [ ] AI model fine-tuning on domain-specific pedagogical datasets
-
----
-
-## Development Team
-
-| Name | Role |
-|---|---|
-| Michael Angello | Lead Developer and System Architect |
 
 ---
 
