@@ -30,6 +30,8 @@ ThinkCode is a web-based programming assessment platform that uses a **Socratic 
 - **Instructor Analytics Dashboard** — real-time visibility into every student's compilation count, error rate, copy-paste ratio, AI query frequency, and process score breakdown.
 - **100% On-Premise AI** — the LLM runs locally via Ollama (Qwen2.5-Coder:3B), so no student data ever leaves the institution's server.
 
+<img width="1280" height="720" alt="Pengambilan Data" src="https://github.com/user-attachments/assets/737e1c1f-41dc-49c1-acff-66c48349cb4d" />
+
 ---
 
 ## How we built it
@@ -61,6 +63,10 @@ ThinkCode is a web-based programming assessment platform that uses a **Socratic 
 - **Pass rate jumped from 25.56% → 73.33%** (effect size r = 0.55, strong; Z = −4.32, p < 0.001) when students had access to the Socratic AI compared to full isolation — proving the mentor meaningfully helps students solve harder problems.
 - **AIDep stayed low at 0.180** under Socratic AI access, not significantly different from the full-isolation condition (0.085; Z = −2.31, p = 0.021 > α_adj = 0.025) — confirming that structured Socratic scaffolding helps students succeed *without* creating new AI dependency.
 - **The entire stack runs on a single consumer GPU**, making it feasible for Indonesian universities with limited infrastructure to self-host without sending any student data to third-party services.
+
+<img width="4152" height="1750" alt="Gambar_5_Distribusi_TTFT_TPS_Final" src="https://github.com/user-attachments/assets/0adf2b4d-4275-49b9-bda2-cd2806d14002" />
+
+<img width="2949" height="1747" alt="Gambar_6_Perbandingan_PassRate_AIDep" src="https://github.com/user-attachments/assets/320acefc-c311-4b92-a49c-3dd315df7b10" />
 
 ---
 
