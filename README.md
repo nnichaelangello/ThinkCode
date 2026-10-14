@@ -13,224 +13,110 @@
 
 ---
 
-## Background and Problem Statement
+## Inspiration
 
-The rise of generative language models such as ChatGPT has fundamentally changed how students approach programming assignments, and not entirely for the better. The ease of obtaining ready-to-run code has created a serious gap in academic integrity: students can submit solutions they do not themselves understand, pass automated evaluations, and leave a course without any real skill having been built.
-
-This is not speculation. Research data consistently reveals the following pattern:
-
-| Metric | Finding | Source |
-|---|---|---|
-| Students using AI in coursework | 92% of undergraduate students in the UK (up from 66% the previous year) | [HEPI and Kortext Student Generative AI Survey 2025](https://www.hepi.ac.uk/2025/02/26/student-generative-ai-survey-2025/) |
-| AI use for assessed work | 88% used it specifically for work that counted toward their grade | [HEPI and Kortext, 2025](https://www.hepi.ac.uk/2025/02/26/student-generative-ai-survey-2025/) |
-| Exam performance decline without AI | 18 to 24% drop in closed-book exams after two years of AI use | [CEPR Discussion Paper No. 21577, 2026](https://cepr.org/publications/dp21577) |
-| Cognitive offloading effect | Approximately 80% of the learning decline is attributable to delegating thinking to AI | [CEPR Discussion Paper No. 21577, 2026](https://cepr.org/publications/dp21577) |
-| Proven academic misconduct cases (UK) | Nearly 7,000 confirmed cases in 2023 to 2024 (5.1 per 1,000 students, up from 1.6 per 1,000) | [The Guardian, FOI investigation, June 2025](https://www.theguardian.com/education/2025/jun/ai-academic-misconduct) |
-
-> "Students who used generative AI for homework saw an 18% grade increase, yet their independent exam scores without AI assistance fell by 20%."
->
-> *"The Generative AI Learning Penalty: Evidence from Chinese Secondary Education"*, CEPR Discussion Paper No. 21577, tracking **26,811 students** over 30 months (2026)
-
-This phenomenon is known as **cognitive offloading**: students delegate the act of thinking to a machine, so no skill is ever truly formed. For working professionals who already have an established baseline, this may cause atrophy. For students who have never built that baseline to begin with, the consequences can be permanent.
-
-### Why Programming is Especially Vulnerable
-
-Programming assignments carry a unique combination of properties that makes them particularly susceptible to misuse. Unlike an essay, which retains traces of a writer's personal style, code carries no inherent fingerprint. A generative AI model can produce syntactically correct, fully functional Python code for a basic programming exercise in under five seconds. A student can copy it, run it against the test cases, receive a passing grade, and submit, without a single moment of learning having occurred, and without any conventional tool being able to detect it.
-
-Existing countermeasures have consistently fallen short:
-
-- **AI bans** are difficult to enforce and counterproductive, given that using AI effectively is itself now an industry competency
-- **Manual code review** does not scale in classes with more than 30 students, and is easily circumvented by students who know how to ask AI to generate code in a beginner's style
-- **Standard plagiarism detectors** work by comparing textual similarity between submissions, making them entirely blind to AI-generated code, since every AI generation produces structurally unique output
-
-No widely accessible tool currently exists that can simultaneously: detect external AI exploitation and copy-paste behavior without invasive device surveillance; actively redirect students back toward independent problem-solving rather than simply cutting off access; and produce objective, mathematically accountable evidence of each student's genuine learning effort for the instructor to use.
-
-ThinkCode was built to close that gap.
+86.21% of Indonesian students use AI to complete coursework — yet standard automated judge systems only check whether the final code runs, not *how* it was built. We watched students paste ChatGPT output, pass every test case, and still fail closed-book exams. Research confirmed what we were seeing: LLM use drops knowledge retention from 68.5% to 57.5% compared to conventional learners. We built ThinkCode because we believe the *form* of AI assistance — not just its availability — determines whether a student actually learns.
 
 ---
 
-## The Solution
+## What it does
 
-ThinkCode is an integrated web-based programming education platform that changes how programming assignments are carried out and evaluated. Rather than focusing solely on whether a student's final code runs, the platform tracks **how** that code was produced.
+ThinkCode is a web-based programming assessment platform that uses a **Socratic AI Mentor** to guide students toward solutions without ever giving them the answer. Instead of banning AI, it redirects it. Key capabilities:
 
-The platform introduces three core innovations:
-
-- A **Socratic AI Mentor** that is deliberately constrained from providing direct answers, instead guiding students through a tiered hint system
-- A **behavioral analytics engine** that passively detects signs of over-reliance on AI and code copying without requiring any surveillance software
-- A **process-based assessment system** that rewards genuine effort, iteration, and error correction, while penalizing shortcuts
-
----
-
-## Who Benefits
-
-| Stakeholder | Benefit from ThinkCode |
-|---|---|
-| **Instructors / Educators** | Real-time, objective visibility into every student's coding behavior, eliminating the need to guess whether a submission reflects genuine understanding. |
-| **Students** | Access to a pedagogically constrained AI mentor that builds problem-solving ability rather than replacing it, alongside a safe space to make mistakes and learn from them. |
-| **Institutions** | A scalable, self-hostable platform that upholds academic integrity without requiring expensive proctoring software or sending student data to third-party services. |
+- **5-Level Socratic Scaffolding** — students must unlock each hint tier sequentially, from metacognitive questions (Level 1) to partial solution repair (Level 5), forcing genuine cognitive effort before accessing more direct help.
+- **AI Dependency Score (AIDep)** — a composite behavioral telemetry metric (0–1) derived from four sub-metrics: Copy-Paste Rate, AI Request Rate, Repeated Error Rate, and Cursor Idle Duration, giving instructors a real-time measure of cognitive dependency.
+- **Process-Based Assessment** — final grades are adjusted by AIDep penalty: `Process Score = Output Score × (1 − 0.5 × AIDep)`, so a student who struggles and learns scores higher than one who pastes a perfect solution.
+- **Sandboxed Code Execution** — student code runs in an isolated Docker container with a 2-second time limit and 50 MB RAM cap, streamed live to the browser via WebSocket.
+- **Instructor Analytics Dashboard** — real-time visibility into every student's compilation count, error rate, copy-paste ratio, AI query frequency, and process score breakdown.
+- **100% On-Premise AI** — the LLM runs locally via Ollama (Qwen2.5-Coder:3B), so no student data ever leaves the institution's server.
 
 ---
 
-## Core Feature Innovations
+## How we built it
 
-### Socratic AI Mentor (5-Level Constraint System)
-
-Unlike conventional AI assistants that hand over solutions immediately, the built-in mentor in ThinkCode operates under a strict behavioral rule set injected at inference time. Students choose a help level before each interaction:
-
-| Level | Mentor Behavior |
-|---|---|
-| Level 1 | No technical guidance. Moral support and encouragement only. |
-| Level 2 | Conceptual questions. The AI redirects the student toward theoretical understanding. |
-| Level 3 | Error localization. The AI narrows down which part of the code is problematic. |
-| Level 4 | Logic scaffolding in plain language (pseudocode only, no real code). |
-| Level 5 | Full architectural guidance, but writing executable code remains strictly forbidden. |
-
-The AI runs entirely **on-premise** via Ollama using the `qwen2.5-coder:3b` model. No student data is sent to any external server.
+- **Backend:** Node.js + Express.js with WebSocket (`ws`) for real-time terminal streaming
+- **Database:** SQLite via `better-sqlite3` for lightweight, self-hosted persistence
+- **Frontend:** Vanilla HTML5, CSS3, JavaScript with CodeMirror as the embedded code editor
+- **AI Runtime:** Ollama running `qwen2.5-coder:3b` locally on an NVIDIA RTX 3060 (12 GB VRAM)
+- **Auth:** JWT-based role authentication (student / instructor)
+- **Sandbox:** Docker child process isolation with strict CPU/RAM/time limits
+- **Telemetry Engine:** Custom behavioral monitoring capturing paste events, cursor idle duration, AI request frequency, and repeated syntax errors in real time
+- **LLM Selection:** We evaluated 4 candidate models (Qwen2.5-Coder:3B, Llama-3.2:3B, Phi-3.5-Mini:3.8B, StarCoder2:3B) against pedagogical metrics (Instruction Following Accuracy, Socratic Quality Score, Bug Detection Accuracy) and technical metrics (TTFT, TPS, VRAM) before selecting Qwen2.5-Coder:3B as the Socratic AI Mentor engine.
 
 ---
 
-### AI Dependency Tracker
+## Challenges we ran into
 
-The platform silently monitors behavioral patterns throughout a coding session to detect signs of external AI exploitation, for example copying output from ChatGPT. Detection is purely behavioral, involving no screenshots or device monitoring. The AI Dependency Score (AIDep) is calculated as:
-
-```
-AIDep = [ (S_ins x 0.3) + (S_cpx x 0.2) + (S_freq x 0.3) + (S_itr x 0.2) + P_bin ] x 100
-```
-
-Where:
-- `S_ins` = Sudden large code insertion (delta exceeding 100 characters in under one second)
-- `S_cpx` = Unexpected use of advanced syntax not typical of a beginner-level student
-- `S_freq` = AI query frequency normalized per hour
-- `S_itr` = Anomalously low trial-and-error count (one-attempt perfect submission anomaly)
-- `P_bin` = Binary paste penalty flag
+- **Keeping the AI Socratic under adversarial pressure.** Students naturally tried to jailbreak the mentor — asking it to "act as a free assistant," encoding requests in Base64, or claiming urgency ("I have 1 minute left"). We built a 50-prompt adversarial evaluation suite across 5 attack categories to select the most instruction-compliant model.
+- **Quantifying something as fuzzy as cognitive dependency.** There was no existing standardized telemetry-based construct for AI dependency in programming assessment. We had to design, weight (via expert judgment), and validate the AIDep metric from scratch.
+- **Balancing scaffolding with fairness.** Penalizing students for using AI felt controversial. The sequential lock on hint levels — where Level 5 (partial fix) is only reachable after exhausting Levels 1–4 — was the design solution: the system forces effort before granting directness.
+- **Running a capable LLM on consumer hardware.** The platform needed to be deployable by resource-limited institutions. Getting sub-150ms Time to First Token on a single RTX 3060 while simultaneously running a Docker sandbox required careful model selection and VRAM budgeting (Qwen2.5-Coder:3B peaks at only 2,808.5 MB).
 
 ---
 
-### Plagiarism and Copy-Paste Detection
+## Accomplishments that we're proud of
 
-The system does not rely on surface-level text comparison. Instead, code is tokenized into pure logical units and compared using the **Jaccard Similarity Coefficient**:
-
-```
-J(A, B) = |A intersect B| / |A union B|
-```
-
-Where `A` and `B` are token sets from two different students' submissions on the same problem. In addition, a paste detection sensor activates whenever a student pastes a block of text exceeding 50 characters from an external source. The combined Copy Score is:
-
-```
-CopyScore = max( max(J) x 100, P_paste )
-P_paste = min( N_paste x 45, 100 )
-```
+- **Qwen2.5-Coder:3B achieved 86.0% Instruction Following Accuracy** against 50 adversarial prompts — the highest of all 4 candidates — meaning it reliably refuses to hand over code even when students push back hard.
+- **Socratic Quality Score of 4.02/5** validated by 5 blind peer-reviewers with Krippendorff's Alpha = 0.71 (above the 0.667 acceptability threshold), confirming the mentor genuinely guides rather than answers.
+- **Pass rate jumped from 25.56% → 73.33%** (effect size r = 0.55, strong; Z = −4.32, p < 0.001) when students had access to the Socratic AI compared to full isolation — proving the mentor meaningfully helps students solve harder problems.
+- **AIDep stayed low at 0.180** under Socratic AI access, not significantly different from the full-isolation condition (0.085; Z = −2.31, p = 0.021 > α_adj = 0.025) — confirming that structured Socratic scaffolding helps students succeed *without* creating new AI dependency.
+- **The entire stack runs on a single consumer GPU**, making it feasible for Indonesian universities with limited infrastructure to self-host without sending any student data to third-party services.
 
 ---
 
-### Process-Based Assessment (Process Score)
+## What we learned
 
-ThinkCode rejects the binary pass-or-fail model. Every submission is scored based on the quality of the learning journey, not just the final outcome:
-
-```
-ProcessScore = 60 + min(N_cmp x 2, 30) + min(N_err x 1.5, 20) - (AIDep x 0.3) - (CopyScore x 0.3)
-```
-
-Where:
-- `N_cmp` = Number of independent compilation attempts (rewarded up to +30)
-- `N_err` = Number of errors encountered and resolved (rewarded up to +20)
-- `AIDep` = AI dependency penalty
-- `CopyScore` = Plagiarism penalty
-
-A student who struggles through 20 failed attempts and ultimately solves the problem earns a higher score than a student who pastes a working solution on the first try.
+- **The form of AI assistance matters more than its availability.** Unmonitored baseline (K1) students had an AIDep of 0.773 and finished tasks in a median of 6.25 minutes — but only because they copy-pasted. Socratic AI users (K3) took 12.06 minutes and actually solved harder C4-level problems with far lower dependency. The constraint is the curriculum.
+- **High pass rate can be a red flag, not a success signal.** K1 showed 88.89% pass rate paired with 0.773 AIDep — meaning the leaderboard looked great while real learning was absent.
+- **Behavioral telemetry reveals what grades hide.** A student who submits a perfect first attempt in 4 minutes and a student who struggles through 20 failed compilations before solving it are indistinguishable by output score alone. AIDep separates them.
+- **Students accept restrictive AI policies when the rationale is transparent.** UAT-3 (the policy of not giving direct code forces independent thinking) scored 4.10/5 — the highest of all UAT items — and UAT-5 (copy-paste penalty is fair) scored 4.03/5. Restriction is acceptable when it feels pedagogically justified.
 
 ---
 
-### Code Execution in Sandbox
+## What's next for ThinkCode
 
-All student code runs inside an **isolated child process**, completely separate from the main server environment. Every execution:
-- Is confined to a uniquely named temporary directory
-- Is automatically force-terminated after **5 seconds** if not completed (preventing infinite loops and resource exhaustion)
-- Streams `stdout` and `stderr` back to the student's browser in real time via a **persistent WebSocket connection**
-
-This sandboxing approach keeps the server stable and available regardless of what code a student submits.
-
----
-
-### Instructor Analytics Dashboard
-
-Instructors gain access to a dedicated monitoring dashboard that aggregates and visualizes each student's performance data across all assignments, including:
-- Compilation count and error rate per problem
-- AI query frequency
-- Copy Score and AI Dependency Score
-- Process Score breakdown
-- Code history snapshots (sequential time-based diff view)
+- **Multi-language sandbox support** (Java, C++, JavaScript) beyond the current Python environment
+- **LMS integration** with Moodle and Google Classroom API for institutional adoption
+- **Adaptive difficulty engine** that adjusts problem complexity based on each student's historical AIDep and pass rate
+- **AIDep weight validation** via Analytic Hierarchy Process (AHP) to replace the current expert judgment approach with a quantitatively validated weighting scheme
+- **Longitudinal study** with multi-institution counterbalanced design and larger sample to measure long-term knowledge retention and transfer
+- **Mobile-responsive interface** for broader accessibility
+- **Exportable analytics reports** (PDF/CSV) for institutional reporting and accreditation evidence
 
 ---
 
-## Tech Stack
+## Hasil Diskusi
 
-| Layer | Technology | License |
-|---|---|---|
-| Backend Server | Node.js + Express.js | [MIT](https://github.com/expressjs/express/blob/master/LICENSE) |
-| Database | SQLite via `better-sqlite3` | [MIT](https://github.com/WiseLibs/better-sqlite3/blob/master/LICENSE) |
-| Real-time Communication | `ws` (WebSocket library) | [MIT](https://github.com/websockets/ws/blob/master/LICENSE) |
-| Frontend | Vanilla HTML5, CSS3, JavaScript | - |
-| Code Editor | CodeMirror | [MIT](https://github.com/codemirror/codemirror5/blob/master/LICENSE) |
-| AI Runtime | Ollama | [MIT](https://github.com/ollama/ollama/blob/main/LICENSE) |
-| AI Model | `qwen2.5-coder:3b` by Alibaba | [Apache 2.0](https://huggingface.co/Qwen/Qwen2.5-Coder-3B) |
-| Auth Middleware | JSON Web Token (`jsonwebtoken`) | [MIT](https://github.com/auth0/node-jsonwebtoken/blob/master/LICENSE) |
+**Experiment Design:** Within-subjects repeated measures across **N = 30 students** (Semester 3–4, Informatics Engineering, Telkom University Surabaya) in three controlled conditions:
 
-All open-source libraries are used in accordance with their respective licenses.
+| Condition | Setup | Pass Rate | Median Duration | AIDep |
+|---|---|---|---|---|
+| K1 – Unmonitored Baseline | No supervision, open internet | **88.89% ± 15.21** | 6.25 min [IQR: 4.10–8.30] | 0.773 ± 0.124 |
+| K2 – Full Isolation | Camera + screen monitoring, browser locked | **25.56% ± 20.15** | 19.76 min [IQR: 15.20–24.15] | 0.085 ± 0.042 |
+| K3 – Socratic AI Access | Supervised + 5-level Socratic mentor | **73.33% ± 18.54** | 12.06 min [IQR: 9.45–15.20] | 0.180 ± 0.065 |
 
----
+**Key Statistical Findings (Friedman + Wilcoxon post-hoc, Bonferroni α_adj = 0.025):**
+- Pass Rate K3 vs K2: Z = −4.32, **p < 0.001, r = 0.55 (strong effect)** — Socratic AI significantly improves performance vs. no help
+- AIDep K3 vs K2: Z = −2.31, **p = 0.021 > α_adj, r = 0.29 (not significant)** — Socratic AI does NOT significantly increase dependency vs. isolation
+- AIDep K1 vs K3: Z = −4.78, **p < 0.001, r = 0.61 (strong effect)** — unmonitored free access creates dramatically more dependency than Socratic AI
 
-## Installation and Setup
+**LLM Selection Results (N = 50 adversarial prompts; N = 10 bug scenarios):**
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) v18 or higher
-- [Ollama](https://ollama.com/) installed and running locally
+| Model | IF-Acc | Socratic Quality (1–5) | Bug Detection | Median TTFT | VRAM Peak |
+|---|---|---|---|---|---|
+| **Qwen2.5-Coder:3B ✓** | **86.0%** | **4.02** | **90.0%** | **148.5 ms** | **2,808.5 MB** |
+| Llama-3.2:3B | 82.0% | 3.48 | 70.0% | 222.5 ms | 3,314.5 MB |
+| Phi-3.5-Mini:3.8B | 84.0% | 3.22 | 80.0% | 188.0 ms | 3,533.0 MB |
+| StarCoder2:3B | 60.0% | 2.26 | 90.0% | 247.5 ms | 3,093.0 MB |
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/nnichaelangello/ThinkCode.git
-cd ThinkCode
-```
+**User Acceptance (N = 30):**
+- **SUS Score: 71.17 (SD = 4.44)** — Marginal / Grade C usability; room for UI improvement
+- **UAT Cronbach's Alpha: α = 0.85** (above 0.70 threshold — reliable instrument)
+- **Highest UAT item:** UAT-3 — *"The AI policy of not giving direct code trains independent thinking"* → Mean **4.10/5** ✅
+- **Second highest:** UAT-5 — *"The copy-paste grade penalty is fair"* → Mean **4.03/5** ✅
+- **Lowest UAT item:** UAT-6 — *"AI response speed"* → Mean **3.73/5** (perceived as slow despite TTFT median of 148.5 ms)
 
-### 2. Install dependencies
-```bash
-npm install
-```
-
-### 3. Pull the AI model via Ollama
-```bash
-ollama pull qwen2.5-coder:3b
-```
-
-### 4. Initialize the database
-```bash
-node database/seed.js
-```
-
-### 5. Start the server
-```bash
-node server.js
-```
-
-### 6. Open the platform
-Visit `http://localhost:3000` in your browser.
-
----
-
-## How to Use
-
-### As an Instructor
-1. Register an account and select the **Instructor** role
-2. Create a course and add programming problems, each with hidden test cases
-3. Monitor student activity in real time through the Analytics Dashboard
-4. Review individual submissions, code snapshots, and AI interaction logs
-
-### As a Student
-1. Register and join an available class
-2. Browse the list of problems and open the coding workspace
-3. Write code in the editor and run it using the real-time terminal
-4. If you get stuck, open the AI Mentor panel and choose a help level (1 to 5)
-5. Submit your solution when ready; the system will automatically grade it and calculate your Process Score
+**Core conclusion:** The *form* of AI assistance — structured Socratic scaffolding — rather than mere availability, is the determining variable in mitigating cognitive dependency in programming assessment.
 
 ---
 
@@ -247,18 +133,6 @@ Visit `http://localhost:3000` in your browser.
 | <img width="1918" height="1198" alt="Problem List" src="https://github.com/user-attachments/assets/96acc29a-ad7a-414d-bb7b-875d487cc212" /> | **Problem List** — Student view of available assignments with completion status indicators |
 | <img width="1918" height="1198" alt="Workspace and AI Mentor" src="https://github.com/user-attachments/assets/36f40ca5-41a7-4d44-8e52-09413d73d9ba" /> | **Workspace + AI Mentor** — Integrated code editor, real-time terminal, and Socratic AI hint panel |
 | <img width="1918" height="1198" alt="Learning Progress" src="https://github.com/user-attachments/assets/4248c786-d925-4fad-94ea-96a454ca668d" /> | **Learning Progress** — Personal student dashboard for tracking completion and overall performance |
-
----
-
-## Development Roadmap
-
-- [ ] Multi-language sandbox support (Java, C++, JavaScript)
-- [ ] LMS integration (Moodle / Google Classroom API)
-- [ ] Student peer-review module and collaborative debugging
-- [ ] Adaptive difficulty engine based on historical performance
-- [ ] Responsive mobile interface for broader accessibility
-- [ ] Exportable analytics reports (PDF / CSV) for institutional use
-- [ ] AI model fine-tuning on domain-specific pedagogical datasets
 
 ---
 
