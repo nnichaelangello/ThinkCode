@@ -91,7 +91,7 @@ ThinkCode is a web-based programming assessment platform that uses a **Socratic 
 
 ---
 
-## Hasil Diskusi
+## Results and Discussion
 
 **Experiment Design:** Within-subjects repeated measures across **N = 30 students** (Semester 3–4, Informatics Engineering, Telkom University Surabaya) in three controlled conditions:
 
